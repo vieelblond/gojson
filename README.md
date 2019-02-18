@@ -5,6 +5,9 @@
 ```golang
 # install
   go get -u -v github.com/go-fish/gojson
+  cd ${GOPATH}/src/github.com/go-fish/gojson/cmd
+  go build -o gojson main.go
+
 
 # usage
   gojson [options] <input dir|file>
