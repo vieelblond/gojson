@@ -7,10 +7,13 @@ type Encoder struct {
 	err  error
 }
 
-var encoderPool = &sync.Pool{New: func() interface{} { return &Encoder{data: make([]byte, 0, 4096)} }}
+var encoderPool = &sync.Pool{New: func() interface{} { return &Encoder{data: make([]byte, 0, 1024)} }}
 
 func NewEncoder() *Encoder {
-	return encoderPool.Get().(*Encoder)
+	enc := encoderPool.Get().(*Encoder)
+	enc.data = make([]byte, 0, 1024)
+
+	return enc
 }
 
 func (e *Encoder) Release() {
@@ -19,7 +22,7 @@ func (e *Encoder) Release() {
 }
 
 func (e *Encoder) reset() {
-	e.data = e.data[:0]
+	e.data = nil
 	e.err = nil
 }
 
