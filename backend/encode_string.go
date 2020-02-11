@@ -1,6 +1,8 @@
 package backend
 
-import "github.com/go-fish/gojson/util"
+import (
+	"github.com/go-fish/gojson/util"
+)
 
 const chars = "0123456789abcdef"
 
@@ -41,9 +43,7 @@ func (e *Encoder) EncodeString(value string) {
 			e.WriteByte('t')
 
 		default:
-			e.WriteString(`\u00`)
-			e.WriteByte(chars[c>>4])
-			e.WriteByte(chars[c&0xF])
+			e.WriteByte(c)
 		}
 	}
 

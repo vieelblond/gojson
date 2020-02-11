@@ -2,17 +2,18 @@ package benchmark
 
 import (
 	json "encoding/json"
+	"fmt"
+	"reflect"
 	"testing"
 
-	"github.com/francoispqt/gojay"
-
 	"github.com/buger/jsonparser"
+	"github.com/francoispqt/gojay"
 	"github.com/go-fish/gojson"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	"github.com/stretchr/testify/assert"
-	"github.com/ugorji/go/codec"
+	"github.com/tidwall/gjson"
 )
 
 func nothing(_ ...interface{}) {}
@@ -20,6 +21,22 @@ func nothing(_ ...interface{}) {}
 var smallObject SmallPayload
 var mediumObject MediumPayload
 var largeObject LargePayload
+
+func smartPrint(i interface{}) {
+	var kv = make(map[string]interface{})
+	vValue := reflect.ValueOf(i)
+	vType := reflect.TypeOf(i)
+	for i := 0; i < vValue.NumField(); i++ {
+		kv[vType.Field(i).Name] = vValue.Field(i)
+	}
+	fmt.Println("获取到数据:")
+	for k, v := range kv {
+		fmt.Print(k)
+		fmt.Print(":")
+		fmt.Printf("%#v", v)
+		fmt.Println()
+	}
+}
 
 func TestGOJSONUnmarshalLarge(t *testing.T) {
 	var obj LargePayload
@@ -55,6 +72,36 @@ func TestGOJSONMarshalLarge(t *testing.T) {
 	assert.Nil(t, err, "Err must be nil")
 
 	var obj1 LargePayload
+	err = easyjson.Unmarshal(data, &obj1)
+	assert.Nil(t, err, "Err must be nil")
+	assert.Equal(t, obj1, obj, "obj must be equal to the value expected")
+}
+
+func TestUnmarshalTestStruct(t *testing.T) {
+	var obj TestStruct
+
+	err := gojson.Unmarshal(testdata, &obj)
+	assert.Nil(t, err, "Err must be nil")
+
+	data, err := gojson.Marshal(&obj)
+	assert.Nil(t, err, "Err must be nil")
+
+	var obj1 TestStruct
+	err = easyjson.Unmarshal(data, &obj1)
+	assert.Nil(t, err, "Err must be nil")
+	assert.Equal(t, obj1, obj, "obj must be equal to the value expected")
+}
+
+func TestUnmarshalTestLargeStruct(t *testing.T) {
+	var obj TestLargeStruct
+
+	err := gojson.Unmarshal(testLargeData, &obj)
+	assert.Nil(t, err, "Err must be nil")
+
+	data, err := gojson.Marshal(&obj)
+	assert.Nil(t, err, "Err must be nil")
+
+	var obj1 TestLargeStruct
 	err = easyjson.Unmarshal(data, &obj1)
 	assert.Nil(t, err, "Err must be nil")
 	assert.Equal(t, obj1, obj, "obj must be equal to the value expected")
@@ -133,27 +180,6 @@ func BenchmarkEasyJsonUnmarshalLarge(b *testing.B) {
 		}
 
 		for _, t := range data.Topics.Topics {
-			nothing(t.Id, t.Slug)
-		}
-	}
-}
-
-func BenchmarkCodecUnmarshalLarge(b *testing.B) {
-
-	b.ReportAllocs()
-	b.SetBytes(int64(len(largeFixture)))
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		var obj LargePayload
-		decoder := codec.NewDecoderBytes(largeFixture, new(codec.JsonHandle))
-		obj.CodecDecodeSelf(decoder)
-
-		for _, u := range obj.Users {
-			nothing(u.Username)
-		}
-
-		for _, t := range obj.Topics.Topics {
 			nothing(t.Id, t.Slug)
 		}
 	}
@@ -281,25 +307,6 @@ func BenchmarkEasyJsonUnmarshalMedium(b *testing.B) {
 	}
 }
 
-func BenchmarkCodecUnmarshalMedium(b *testing.B) {
-	b.ReportAllocs()
-	b.SetBytes(int64(len(mediumFixture)))
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		decoder := codec.NewDecoderBytes(mediumFixture, new(codec.JsonHandle))
-		data := new(MediumPayload)
-		json.Unmarshal(mediumFixture, &data)
-		data.CodecDecodeSelf(decoder)
-
-		nothing(data.Person.Name.FullName, data.Person.Github.Followers, data.Company)
-
-		for _, el := range data.Person.Gravatar.Avatars {
-			nothing(el.Url)
-		}
-	}
-}
-
 func BenchmarkJSONUnmarshalMedium(b *testing.B) {
 	b.ReportAllocs()
 	b.SetBytes(int64(len(mediumFixture)))
@@ -390,21 +397,6 @@ func BenchmarkEasyJsonUnmarshalSmall(b *testing.B) {
 	}
 }
 
-func BenchmarkCodecUnmarshalSmall(b *testing.B) {
-	b.ReportAllocs()
-	b.SetBytes(int64(len(smallFixture)))
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		decoder := codec.NewDecoderBytes(smallFixture, new(codec.JsonHandle))
-		data := new(SmallPayload)
-		json.Unmarshal(smallFixture, &data)
-		data.CodecDecodeSelf(decoder)
-
-		nothing(data.Uuid, data.Tz, data.Ua, data.St)
-	}
-}
-
 func BenchmarkJSONUnmarshalSmall(b *testing.B) {
 	b.ReportAllocs()
 	b.SetBytes(int64(len(smallFixture)))
@@ -429,6 +421,110 @@ func BenchmarkJsonIterUnmarshalSmall(b *testing.B) {
 		json.Unmarshal(smallFixture, &obj)
 
 		nothing(obj.Uuid, obj.Tz, obj.Ua, obj.St)
+	}
+}
+
+func BenchmarkJSONUnmarshalTest(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testdata)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var obj TestStruct
+		json.Unmarshal(testdata, &obj)
+
+		nothing(obj.A)
+	}
+}
+
+func BenchmarkJsonIterUnmarshalTest(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testdata)))
+	b.ResetTimer()
+
+	var json = jsoniter.ConfigFastest
+	for i := 0; i < b.N; i++ {
+		var obj TestStruct
+		json.Unmarshal(testdata, &obj)
+
+		nothing(obj.A)
+	}
+}
+
+func BenchmarkGOJSONUnmarshalTest(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testdata)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var obj TestStruct
+		gojson.Unmarshal(testdata, &obj)
+
+		nothing(obj.A)
+	}
+}
+
+func BenchmarkGJSONUnmarshalTest(b *testing.B) {
+	teststr := string(testdata)
+
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testdata)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var obj TestStruct
+		gjson.Get(teststr, "a")
+
+		nothing(obj.A)
+	}
+}
+
+func BenchmarkJsonParserUnmarshalTest(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testdata)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		jsonparser.Get(testdata, "A")
+
+		nothing()
+	}
+}
+
+func BenchmarkEasyJsonUnmarshalTest(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testdata)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		lexer := &jlexer.Lexer{Data: testdata}
+		data := new(TestStruct)
+		data.UnmarshalEasyJSON(lexer)
+
+		nothing(data.A)
+	}
+}
+
+func BenchmarkGOJSONUnmarshalTestLarge(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testLargeData)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		var obj TestLargeStruct
+		gojson.Unmarshal(testLargeData, &obj)
+	}
+}
+
+func BenchmarkEasyJsonUnmarshalTestLarge(b *testing.B) {
+	b.ReportAllocs()
+	b.SetBytes(int64(len(testLargeData)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		lexer := &jlexer.Lexer{Data: testLargeData}
+		data := new(TestLargeStruct)
+		data.UnmarshalEasyJSON(lexer)
 	}
 }
 

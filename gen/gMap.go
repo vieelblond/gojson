@@ -553,7 +553,10 @@ func (b *Builder) gFieldDecode(fn string, parent, self *FieldTag, obj *types.Str
 				if self.pointer {
 					b.line("if len(%s) == 0 {", data)
 					b.line("%s = nil", fn)
+					b.line("} else if %s == nil {", fn)
+					b.line("%s = new(%s)", fn, b.typeString(field.Type(), opt))
 					b.line("}")
+					b.line("")
 				}
 
 				b.line("if err := %s.UnmarshalJSON(%s); err != nil {", fn, data)

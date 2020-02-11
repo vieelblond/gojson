@@ -44,8 +44,8 @@ func (d *Decoder) DecodeString() (string, error) {
 			return util.UnsafeConvertBytesToString(data[:i]), nil
 		} else if c == '\\' {
 			if next := i + 1; next < len(data) && (data[next] == '\\' || data[next] == '"') {
-				// _ = append(data[:i], data[next:]...)
-				copy(data[i:], data[next:])
+				//copy(data[i:], data[next:])
+				data = append(data[:i], data[next:]...)
 			}
 		}
 	}

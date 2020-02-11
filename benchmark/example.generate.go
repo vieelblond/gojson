@@ -10,6 +10,106 @@ import (
 	errors "github.com/go-fish/gojson/errors"
 )
 
+func (a *Agent) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("hostname", a.Hostname)
+
+	enc.EncodeKeyString("id", a.ID)
+
+	enc.EncodeKeyString("version", a.Version)
+
+	enc.EncodeKeyString("type", a.Type)
+
+	enc.EncodeKeyString("ephemeral_id", a.EphemeralID)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (a *Agent) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj975b114a623af7b0 := 1; obj975b114a623af7b0 > 0; {
+				keyacd46aef3059f22d, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keyacd46aef3059f22d {
+				case "hostname":
+					value955304564ec12056, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					a.Hostname = value955304564ec12056
+
+				case "id":
+					value0aa01f7cd40adf21, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					a.ID = value0aa01f7cd40adf21
+
+				case "version":
+					value6684f3d921884f6f, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					a.Version = value6684f3d921884f6f
+
+				case "type":
+					value9f87960c4ddd8c54, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					a.Type = value9f87960c4ddd8c54
+
+				case "ephemeral_id":
+					value93f287f75316b697, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					a.EphemeralID = value93f287f75316b697
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj975b114a623af7b0--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
 func (c *CBAvatar) MarshalJSON() ([]byte, error) {
 	enc := backend.NewEncoder()
 
@@ -39,20 +139,20 @@ func (c *CBAvatar) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for objdc8155ea73453729 := 1; objdc8155ea73453729 > 0; {
-				keye447d0b30f72b9a6, err := dec.NextKey()
+			for obj25c2506ffb3fa954 := 1; obj25c2506ffb3fa954 > 0; {
+				key479f117c516d8e9c, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch keye447d0b30f72b9a6 {
+				switch key479f117c516d8e9c {
 				case "url":
-					valued7e76af3818193f6, err := dec.DecodeString()
+					value3da7bf4766834711, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					c.Url = valued7e76af3818193f6
+					c.Url = value3da7bf4766834711
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -60,7 +160,7 @@ func (c *CBAvatar) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					objdc8155ea73453729--
+					obj25c2506ffb3fa954--
 				}
 			}
 		}
@@ -99,20 +199,20 @@ func (c *CBGithub) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for obj31233a73a5f6a14f := 1; obj31233a73a5f6a14f > 0; {
-				key605e9c2f08de0add, err := dec.NextKey()
+			for obj80a51e4f8ebb2efe := 1; obj80a51e4f8ebb2efe > 0; {
+				key36b8a0acd131e3eb, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch key605e9c2f08de0add {
+				switch key36b8a0acd131e3eb {
 				case "followers":
-					valuecb68fac2bc2789c4, err := dec.DecodeInt()
+					valuedf26cf2a50151851, err := dec.DecodeInt()
 					if err != nil {
 						return err
 					}
 
-					c.Followers = valuecb68fac2bc2789c4
+					c.Followers = valuedf26cf2a50151851
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -120,7 +220,7 @@ func (c *CBGithub) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					obj31233a73a5f6a14f--
+					obj80a51e4f8ebb2efe--
 				}
 			}
 		}
@@ -139,13 +239,13 @@ func (c *CBGravatar) MarshalJSON() ([]byte, error) {
 		enc.WriteNull()
 	} else {
 		enc.WriteByte('[')
-		for _, valueb2f627e2e376cee2 := range c.Avatars {
+		for _, valued005f43f6167b95e := range c.Avatars {
 			enc.WriteComma()
-			if valueb2f627e2e376cee2 == nil {
+			if valued005f43f6167b95e == nil {
 				enc.WriteNull()
 			} else {
 				enc.WriteByte('{')
-				enc.EncodeKeyString("url", valueb2f627e2e376cee2.Url)
+				enc.EncodeKeyString("url", valued005f43f6167b95e.Url)
 
 				enc.WriteByte('}')
 			}
@@ -176,13 +276,13 @@ func (c *CBGravatar) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for objf7aefa4f83a4a00a := 1; objf7aefa4f83a4a00a > 0; {
-				keyb8651e19abf08f60, err := dec.NextKey()
+			for obj5b9f36235a361714 := 1; obj5b9f36235a361714 > 0; {
+				keycbd10cc9de9cf3cf, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch keyb8651e19abf08f60 {
+				switch keycbd10cc9de9cf3cf {
 				case "avatars":
 					if char := dec.NextChar(); char == 'n' {
 						if err := dec.AssetNull(); err != nil {
@@ -201,12 +301,12 @@ func (c *CBGravatar) UnmarshalJSON(data []byte) error {
 								c.Avatars = make(Avatars, 0, 8)
 							}
 
-							for arrayb9acef45a7d35608 := 1; arrayb9acef45a7d35608 > 0; {
-								var value2d5e32356098d4d4 *CBAvatar
+							for array2d05ddacc209bbde := 1; array2d05ddacc209bbde > 0; {
+								var valuef81f5455746bc2b0 *CBAvatar
 								if dec.IsNull() {
-									value2d5e32356098d4d4 = nil
+									valuef81f5455746bc2b0 = nil
 								} else {
-									value2d5e32356098d4d4 = new(CBAvatar)
+									valuef81f5455746bc2b0 = new(CBAvatar)
 
 									if char := dec.NextChar(); char == 'n' {
 										if err := dec.AssetNull(); err != nil {
@@ -220,20 +320,20 @@ func (c *CBGravatar) UnmarshalJSON(data []byte) error {
 										if dec.IsObjectClose() {
 											return nil
 										} else {
-											for obj9b96a580b6418388 := 1; obj9b96a580b6418388 > 0; {
-												key2d6d317c5d5ed1f8, err := dec.NextKey()
+											for obj0bddd90aa1252027 := 1; obj0bddd90aa1252027 > 0; {
+												keyf51f4d1a31b8e5f4, err := dec.NextKey()
 												if err != nil {
 													return err
 												}
 
-												switch key2d6d317c5d5ed1f8 {
+												switch keyf51f4d1a31b8e5f4 {
 												case "url":
-													valuea8d008128f2e2483, err := dec.DecodeString()
+													valuee66a867843143b0a, err := dec.DecodeString()
 													if err != nil {
 														return err
 													}
 
-													value2d5e32356098d4d4.Url = valuea8d008128f2e2483
+													valuef81f5455746bc2b0.Url = valuee66a867843143b0a
 
 												default:
 													if err := dec.SkipValue(); err != nil {
@@ -241,17 +341,17 @@ func (c *CBGravatar) UnmarshalJSON(data []byte) error {
 													}
 												}
 												if dec.IsObjectClose() {
-													obj9b96a580b6418388--
+													obj0bddd90aa1252027--
 												}
 											}
 										}
 									}
 								}
-								if value2d5e32356098d4d4 != nil {
-									c.Avatars = append(c.Avatars, value2d5e32356098d4d4)
+								if valuef81f5455746bc2b0 != nil {
+									c.Avatars = append(c.Avatars, valuef81f5455746bc2b0)
 								}
 								if dec.IsArrayClose() {
-									arrayb9acef45a7d35608--
+									array2d05ddacc209bbde--
 								}
 							}
 						}
@@ -263,7 +363,7 @@ func (c *CBGravatar) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					objf7aefa4f83a4a00a--
+					obj5b9f36235a361714--
 				}
 			}
 		}
@@ -302,20 +402,20 @@ func (c *CBName) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for objf277d3571d47abf0 := 1; objf277d3571d47abf0 > 0; {
-				key5c2452b721d1d482, err := dec.NextKey()
+			for obj9e79be9d95a672bf := 1; obj9e79be9d95a672bf > 0; {
+				key180a14fdad276375, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch key5c2452b721d1d482 {
+				switch key180a14fdad276375 {
 				case "fullName":
-					valueec56040faa3f4b54, err := dec.DecodeString()
+					value67e352404d48481f, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					c.FullName = valueec56040faa3f4b54
+					c.FullName = value67e352404d48481f
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -323,7 +423,7 @@ func (c *CBName) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					objf277d3571d47abf0--
+					obj9e79be9d95a672bf--
 				}
 			}
 		}
@@ -359,13 +459,13 @@ func (c *CBPerson) MarshalJSON() ([]byte, error) {
 			enc.WriteNull()
 		} else {
 			enc.WriteByte('[')
-			for _, value85c75f312cdb570c := range c.Gravatar.Avatars {
+			for _, valuef6278b2f4812f467 := range c.Gravatar.Avatars {
 				enc.WriteComma()
-				if value85c75f312cdb570c == nil {
+				if valuef6278b2f4812f467 == nil {
 					enc.WriteNull()
 				} else {
 					enc.WriteByte('{')
-					enc.EncodeKeyString("url", value85c75f312cdb570c.Url)
+					enc.EncodeKeyString("url", valuef6278b2f4812f467.Url)
 
 					enc.WriteByte('}')
 				}
@@ -398,13 +498,13 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for obj27f50ee5dc798e77 := 1; obj27f50ee5dc798e77 > 0; {
-				key07e98cff2fbda131, err := dec.NextKey()
+			for obj330acb2dcdc0fcc3 := 1; obj330acb2dcdc0fcc3 > 0; {
+				key7cf04cb7985bc94c, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch key07e98cff2fbda131 {
+				switch key7cf04cb7985bc94c {
 				case "name":
 					if dec.IsNull() {
 						c.Name = nil
@@ -418,20 +518,20 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 								c.Name = new(CBName)
 							}
 
-							for obj3c810279cec13618 := 1; obj3c810279cec13618 > 0; {
-								key69452d12e09093c9, err := dec.NextKey()
+							for obj3c18c088d96a309f := 1; obj3c18c088d96a309f > 0; {
+								key0a353dd24aebd4ce, err := dec.NextKey()
 								if err != nil {
 									return err
 								}
 
-								switch key69452d12e09093c9 {
+								switch key0a353dd24aebd4ce {
 								case "fullName":
-									value5baeeb9d79eea705, err := dec.DecodeString()
+									value8764073b887dfec3, err := dec.DecodeString()
 									if err != nil {
 										return err
 									}
 
-									c.Name.FullName = value5baeeb9d79eea705
+									c.Name.FullName = value8764073b887dfec3
 
 								default:
 									if err := dec.SkipValue(); err != nil {
@@ -439,7 +539,7 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 									}
 								}
 								if dec.IsObjectClose() {
-									obj3c810279cec13618--
+									obj3c18c088d96a309f--
 								}
 							}
 						}
@@ -458,20 +558,20 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 								c.Github = new(CBGithub)
 							}
 
-							for obj9ec925be3904b8d8 := 1; obj9ec925be3904b8d8 > 0; {
-								keyd09334ae6a5d7ca2, err := dec.NextKey()
+							for obj1f4cfd8289590769 := 1; obj1f4cfd8289590769 > 0; {
+								key3bb1e4092cc8dcd8, err := dec.NextKey()
 								if err != nil {
 									return err
 								}
 
-								switch keyd09334ae6a5d7ca2 {
+								switch key3bb1e4092cc8dcd8 {
 								case "followers":
-									value68dcc2bb1ef27925, err := dec.DecodeInt()
+									value216297a0c3967709, err := dec.DecodeInt()
 									if err != nil {
 										return err
 									}
 
-									c.Github.Followers = value68dcc2bb1ef27925
+									c.Github.Followers = value216297a0c3967709
 
 								default:
 									if err := dec.SkipValue(); err != nil {
@@ -479,7 +579,7 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 									}
 								}
 								if dec.IsObjectClose() {
-									obj9ec925be3904b8d8--
+									obj1f4cfd8289590769--
 								}
 							}
 						}
@@ -498,13 +598,13 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 								c.Gravatar = new(CBGravatar)
 							}
 
-							for objbb21b0a87fa969b8 := 1; objbb21b0a87fa969b8 > 0; {
-								keybde68e76371b0edc, err := dec.NextKey()
+							for objca2735d21c4e53a0 := 1; objca2735d21c4e53a0 > 0; {
+								key591ca2a9544713dd, err := dec.NextKey()
 								if err != nil {
 									return err
 								}
 
-								switch keybde68e76371b0edc {
+								switch key591ca2a9544713dd {
 								case "avatars":
 									if char := dec.NextChar(); char == 'n' {
 										if err := dec.AssetNull(); err != nil {
@@ -523,12 +623,12 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 												c.Gravatar.Avatars = make(Avatars, 0, 8)
 											}
 
-											for arrayc8772200c60d8988 := 1; arrayc8772200c60d8988 > 0; {
-												var valued03ce19709e1368d *CBAvatar
+											for array2d790f0e24c33f29 := 1; array2d790f0e24c33f29 > 0; {
+												var value336f1bdfb42fadbf *CBAvatar
 												if dec.IsNull() {
-													valued03ce19709e1368d = nil
+													value336f1bdfb42fadbf = nil
 												} else {
-													valued03ce19709e1368d = new(CBAvatar)
+													value336f1bdfb42fadbf = new(CBAvatar)
 
 													if char := dec.NextChar(); char == 'n' {
 														if err := dec.AssetNull(); err != nil {
@@ -542,20 +642,20 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 														if dec.IsObjectClose() {
 															return nil
 														} else {
-															for obj2949f2f705e3c87a := 1; obj2949f2f705e3c87a > 0; {
-																keyb07c27752ebc8e07, err := dec.NextKey()
+															for obj4100fd2e2df3082e := 1; obj4100fd2e2df3082e > 0; {
+																key29ae09fc034e19ed, err := dec.NextKey()
 																if err != nil {
 																	return err
 																}
 
-																switch keyb07c27752ebc8e07 {
+																switch key29ae09fc034e19ed {
 																case "url":
-																	value09c8a8f9e32b68cf, err := dec.DecodeString()
+																	valuea928b0678d5ffb77, err := dec.DecodeString()
 																	if err != nil {
 																		return err
 																	}
 
-																	valued03ce19709e1368d.Url = value09c8a8f9e32b68cf
+																	value336f1bdfb42fadbf.Url = valuea928b0678d5ffb77
 
 																default:
 																	if err := dec.SkipValue(); err != nil {
@@ -563,17 +663,17 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 																	}
 																}
 																if dec.IsObjectClose() {
-																	obj2949f2f705e3c87a--
+																	obj4100fd2e2df3082e--
 																}
 															}
 														}
 													}
 												}
-												if valued03ce19709e1368d != nil {
-													c.Gravatar.Avatars = append(c.Gravatar.Avatars, valued03ce19709e1368d)
+												if value336f1bdfb42fadbf != nil {
+													c.Gravatar.Avatars = append(c.Gravatar.Avatars, value336f1bdfb42fadbf)
 												}
 												if dec.IsArrayClose() {
-													arrayc8772200c60d8988--
+													array2d790f0e24c33f29--
 												}
 											}
 										}
@@ -585,7 +685,7 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 									}
 								}
 								if dec.IsObjectClose() {
-									objbb21b0a87fa969b8--
+									objca2735d21c4e53a0--
 								}
 							}
 						}
@@ -597,7 +697,87 @@ func (c *CBPerson) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					obj27f50ee5dc798e77--
+					obj330acb2dcdc0fcc3--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (c *Client) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("bytes", c.Bytes)
+
+	enc.EncodeKeyString("ip", c.IP)
+
+	enc.EncodeKeyInt("port", c.Port)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (c *Client) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj15d22079f70a9528 := 1; obj15d22079f70a9528 > 0; {
+				key5961052aca6dc84f, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key5961052aca6dc84f {
+				case "bytes":
+					valuef489b5d3227d8e4c, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					c.Bytes = valuef489b5d3227d8e4c
+
+				case "ip":
+					value78d3dd3b5df2cb7e, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					c.IP = value78d3dd3b5df2cb7e
+
+				case "port":
+					valuea0443cb4da636cf2, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					c.Port = valuea0443cb4da636cf2
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj15d22079f70a9528--
 				}
 			}
 		}
@@ -638,28 +818,28 @@ func (d *DSTopic) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for objaf47527b2844386d := 1; objaf47527b2844386d > 0; {
-				key5a709f17747e11ab, err := dec.NextKey()
+			for objb050ebaf6c6a4ece := 1; objb050ebaf6c6a4ece > 0; {
+				key416875a04432e079, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch key5a709f17747e11ab {
+				switch key416875a04432e079 {
 				case "id":
-					valuee8bfe225689f3d38, err := dec.DecodeInt()
+					value397cabe591511d23, err := dec.DecodeInt()
 					if err != nil {
 						return err
 					}
 
-					d.Id = valuee8bfe225689f3d38
+					d.Id = value397cabe591511d23
 
 				case "slug":
-					value9ccde299b4a5cee9, err := dec.DecodeString()
+					value1fad33d5eb64ca26, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					d.Slug = value9ccde299b4a5cee9
+					d.Slug = value1fad33d5eb64ca26
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -667,7 +847,7 @@ func (d *DSTopic) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					objaf47527b2844386d--
+					objb050ebaf6c6a4ece--
 				}
 			}
 		}
@@ -686,15 +866,15 @@ func (d *DSTopicsList) MarshalJSON() ([]byte, error) {
 		enc.WriteNull()
 	} else {
 		enc.WriteByte('[')
-		for _, valuee7bfa9be0fd4ce1b := range d.Topics {
+		for _, value1c6b5a26d59541c7 := range d.Topics {
 			enc.WriteComma()
-			if valuee7bfa9be0fd4ce1b == nil {
+			if value1c6b5a26d59541c7 == nil {
 				enc.WriteNull()
 			} else {
 				enc.WriteByte('{')
-				enc.EncodeKeyInt("id", valuee7bfa9be0fd4ce1b.Id)
+				enc.EncodeKeyInt("id", value1c6b5a26d59541c7.Id)
 
-				enc.EncodeKeyString("slug", valuee7bfa9be0fd4ce1b.Slug)
+				enc.EncodeKeyString("slug", value1c6b5a26d59541c7.Slug)
 
 				enc.WriteByte('}')
 			}
@@ -727,13 +907,13 @@ func (d *DSTopicsList) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for obj6e7a5039fab17b48 := 1; obj6e7a5039fab17b48 > 0; {
-				key9211e413371d82b8, err := dec.NextKey()
+			for obj0afe2d24e851ef65 := 1; obj0afe2d24e851ef65 > 0; {
+				key486d9a7644e7ca36, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch key9211e413371d82b8 {
+				switch key486d9a7644e7ca36 {
 				case "topics":
 					if char := dec.NextChar(); char == 'n' {
 						if err := dec.AssetNull(); err != nil {
@@ -752,12 +932,12 @@ func (d *DSTopicsList) UnmarshalJSON(data []byte) error {
 								d.Topics = make(DSTopics, 0, 8)
 							}
 
-							for arraya0ab29cd417e1f26 := 1; arraya0ab29cd417e1f26 > 0; {
-								var valueeef8244158da9fe5 *DSTopic
+							for arrayee548f791593277c := 1; arrayee548f791593277c > 0; {
+								var value4272cfba0cec690b *DSTopic
 								if dec.IsNull() {
-									valueeef8244158da9fe5 = nil
+									value4272cfba0cec690b = nil
 								} else {
-									valueeef8244158da9fe5 = new(DSTopic)
+									value4272cfba0cec690b = new(DSTopic)
 
 									if char := dec.NextChar(); char == 'n' {
 										if err := dec.AssetNull(); err != nil {
@@ -771,28 +951,28 @@ func (d *DSTopicsList) UnmarshalJSON(data []byte) error {
 										if dec.IsObjectClose() {
 											return nil
 										} else {
-											for objc433ff5ae434cbe8 := 1; objc433ff5ae434cbe8 > 0; {
-												key526b5f81e2ae9efd, err := dec.NextKey()
+											for obj121a201c76d1d553 := 1; obj121a201c76d1d553 > 0; {
+												key8f69e6df86174849, err := dec.NextKey()
 												if err != nil {
 													return err
 												}
 
-												switch key526b5f81e2ae9efd {
+												switch key8f69e6df86174849 {
 												case "id":
-													valuef17f36a7593e5774, err := dec.DecodeInt()
+													value290c73771108e994, err := dec.DecodeInt()
 													if err != nil {
 														return err
 													}
 
-													valueeef8244158da9fe5.Id = valuef17f36a7593e5774
+													value4272cfba0cec690b.Id = value290c73771108e994
 
 												case "slug":
-													value80e985f75d963547, err := dec.DecodeString()
+													valuef07b21b479d964d8, err := dec.DecodeString()
 													if err != nil {
 														return err
 													}
 
-													valueeef8244158da9fe5.Slug = value80e985f75d963547
+													value4272cfba0cec690b.Slug = valuef07b21b479d964d8
 
 												default:
 													if err := dec.SkipValue(); err != nil {
@@ -800,29 +980,29 @@ func (d *DSTopicsList) UnmarshalJSON(data []byte) error {
 													}
 												}
 												if dec.IsObjectClose() {
-													objc433ff5ae434cbe8--
+													obj121a201c76d1d553--
 												}
 											}
 										}
 									}
 								}
-								if valueeef8244158da9fe5 != nil {
-									d.Topics = append(d.Topics, valueeef8244158da9fe5)
+								if value4272cfba0cec690b != nil {
+									d.Topics = append(d.Topics, value4272cfba0cec690b)
 								}
 								if dec.IsArrayClose() {
-									arraya0ab29cd417e1f26--
+									arrayee548f791593277c--
 								}
 							}
 						}
 					}
 
 				case "more_topics_url":
-					valued0e4d838d0af60bd, err := dec.DecodeString()
+					valuefe69ab0556501b42, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					d.MoreTopicsUrl = valued0e4d838d0af60bd
+					d.MoreTopicsUrl = valuefe69ab0556501b42
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -830,7 +1010,7 @@ func (d *DSTopicsList) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					obj6e7a5039fab17b48--
+					obj0afe2d24e851ef65--
 				}
 			}
 		}
@@ -869,20 +1049,20 @@ func (d *DSUser) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for obj9749416861de4852 := 1; obj9749416861de4852 > 0; {
-				key2daefd87e960076f, err := dec.NextKey()
+			for objb5f542c0f8400bbe := 1; objb5f542c0f8400bbe > 0; {
+				keyac982fdee3adad40, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch key2daefd87e960076f {
+				switch keyac982fdee3adad40 {
 				case "username":
-					value4fd38e192c55d6c7, err := dec.DecodeString()
+					value7650506db66801ea, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					d.Username = value4fd38e192c55d6c7
+					d.Username = value7650506db66801ea
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -890,7 +1070,836 @@ func (d *DSUser) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					obj9749416861de4852--
+					objb5f542c0f8400bbe--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (d *Destination) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("ip", d.IP)
+
+	enc.EncodeKeyInt("port", d.Port)
+
+	enc.EncodeKeyString("domain", d.Domain)
+
+	enc.EncodeKeyInt("bytes", d.Bytes)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (d *Destination) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj2bc3042f85502d72 := 1; obj2bc3042f85502d72 > 0; {
+				key25735d2abdf35b03, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key25735d2abdf35b03 {
+				case "ip":
+					value3f0a6601c61d1781, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					d.IP = value3f0a6601c61d1781
+
+				case "port":
+					valueaf2527e527e65b95, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					d.Port = valueaf2527e527e65b95
+
+				case "domain":
+					value2fe0ff70e9b8972a, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					d.Domain = value2fe0ff70e9b8972a
+
+				case "bytes":
+					value594b479787555dbf, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					d.Bytes = value594b479787555dbf
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj2bc3042f85502d72--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (e *Ecs) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("version", e.Version)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (e *Ecs) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj48692a714a5483a4 := 1; obj48692a714a5483a4 > 0; {
+				keyc6ed9d0ff649dbad, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keyc6ed9d0ff649dbad {
+				case "version":
+					value9c1455162fc21310, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					e.Version = value9c1455162fc21310
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj48692a714a5483a4--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (e *Event) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("duration", e.Duration)
+
+	enc.WriteKey("start")
+	datadfde38bab61e67d8, err := e.Start.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	enc.WriteBytes(datadfde38bab61e67d8)
+	enc.WriteKey("end")
+	dataaae5e7129f51b6ec, err := e.End.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	enc.WriteBytes(dataaae5e7129f51b6ec)
+	enc.EncodeKeyString("kind", e.Kind)
+
+	enc.EncodeKeyString("category", e.Category)
+
+	enc.EncodeKeyString("dataset", e.Dataset)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (e *Event) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj04544cadb6306426 := 1; obj04544cadb6306426 > 0; {
+				keyafc0d7b7c3e9f8e8, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keyafc0d7b7c3e9f8e8 {
+				case "duration":
+					valuec599569e5d84a052, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					e.Duration = valuec599569e5d84a052
+
+				case "start":
+					data337169e9fe122205, err := dec.ReadValue()
+					if err != nil {
+						return nil
+					}
+
+					if err := e.Start.UnmarshalJSON(data337169e9fe122205); err != nil {
+						return err
+					}
+
+				case "end":
+					data1edca81ce8436d34, err := dec.ReadValue()
+					if err != nil {
+						return nil
+					}
+
+					if err := e.End.UnmarshalJSON(data1edca81ce8436d34); err != nil {
+						return err
+					}
+
+				case "kind":
+					value5a346d5713680078, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					e.Kind = value5a346d5713680078
+
+				case "category":
+					value46bf44f6ebeca303, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					e.Category = value46bf44f6ebeca303
+
+				case "dataset":
+					valuea0189f14232fcebb, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					e.Dataset = valuea0189f14232fcebb
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj04544cadb6306426--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (h *HTTP) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.WriteKey("response")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("status_code", h.Response.StatusCode)
+
+	enc.WriteKey("body")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("content", h.Response.Body.Content)
+
+	enc.EncodeKeyInt("bytes", h.Response.Body.Bytes)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyInt("bytes", h.Response.Bytes)
+
+	enc.WriteKey("headers")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("content-length", h.Response.Headers.ContentLength)
+
+	enc.EncodeKeyString("transfer-encoding", h.Response.Headers.TransferEncoding)
+
+	enc.EncodeKeyString("connection", h.Response.Headers.Connection)
+
+	enc.EncodeKeyString("cache-control", h.Response.Headers.CacheControl)
+
+	enc.EncodeKeyString("pragma", h.Response.Headers.Pragma)
+
+	enc.EncodeKeyString("server", h.Response.Headers.Server)
+
+	enc.EncodeKeyString("date", h.Response.Headers.Date)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("status_phrase", h.Response.StatusPhrase)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("version", h.Version)
+
+	enc.WriteKey("request")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("referrer", h.Request.Referrer)
+
+	enc.EncodeKeyInt("bytes", h.Request.Bytes)
+
+	enc.WriteKey("headers")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("referer", h.Request.Headers.Referer)
+
+	enc.EncodeKeyString("x-requested-with", h.Request.Headers.XRequestedWith)
+
+	enc.EncodeKeyString("yz_client_ip", h.Request.Headers.YzClientIP)
+
+	enc.EncodeKeyString("user-agent", h.Request.Headers.UserAgent)
+
+	enc.EncodeKeyString("accept-language", h.Request.Headers.AcceptLanguage)
+
+	enc.EncodeKeyInt("content-length", h.Request.Headers.ContentLength)
+
+	enc.EncodeKeyString("x-real-ip", h.Request.Headers.XRealIP)
+
+	enc.EncodeKeyString("pragma", h.Request.Headers.Pragma)
+
+	enc.EncodeKeyString("connection", h.Request.Headers.Connection)
+
+	enc.EncodeKeyString("accept", h.Request.Headers.Accept)
+
+	enc.EncodeKeyString("host", h.Request.Headers.Host)
+
+	enc.EncodeKeyString("x-forwarded-for", h.Request.Headers.XForwardedFor)
+
+	enc.EncodeKeyString("content-type", h.Request.Headers.ContentType)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("method", h.Request.Method)
+
+	enc.WriteByte('}')
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (h *HTTP) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for objdb246b43881c58c8 := 1; objdb246b43881c58c8 > 0; {
+				key3f78a992efb05085, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key3f78a992efb05085 {
+				case "response":
+					if dec.IsNull() {
+						h.Response = Response{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							h.Response = Response{}
+						} else {
+							for obj07187d24de4a5c90 := 1; obj07187d24de4a5c90 > 0; {
+								keyecb7c68609070658, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch keyecb7c68609070658 {
+								case "status_code":
+									value7334781abe6c8204, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									h.Response.StatusCode = value7334781abe6c8204
+
+								case "body":
+									if dec.IsNull() {
+										h.Response.Body = Body{}
+									} else if !dec.IsObjectOpen() {
+										return errors.NewParseError(dec.Char(), dec.Cursor())
+									} else {
+										if dec.IsObjectClose() {
+											h.Response.Body = Body{}
+										} else {
+											for obj72092b83e83d241a := 1; obj72092b83e83d241a > 0; {
+												key0ba7b758f74b66de, err := dec.NextKey()
+												if err != nil {
+													return err
+												}
+
+												switch key0ba7b758f74b66de {
+												case "content":
+													valuecbc2d50e17431e40, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Body.Content = valuecbc2d50e17431e40
+
+												case "bytes":
+													value0af6db6e4e694752, err := dec.DecodeInt()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Body.Bytes = value0af6db6e4e694752
+
+												default:
+													if err := dec.SkipValue(); err != nil {
+														return err
+													}
+												}
+												if dec.IsObjectClose() {
+													obj72092b83e83d241a--
+												}
+											}
+										}
+									}
+
+								case "bytes":
+									value1851e0d715d11ba3, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									h.Response.Bytes = value1851e0d715d11ba3
+
+								case "headers":
+									if dec.IsNull() {
+										h.Response.Headers = ResponseHeaders{}
+									} else if !dec.IsObjectOpen() {
+										return errors.NewParseError(dec.Char(), dec.Cursor())
+									} else {
+										if dec.IsObjectClose() {
+											h.Response.Headers = ResponseHeaders{}
+										} else {
+											for obj08e9a5f37ce11465 := 1; obj08e9a5f37ce11465 > 0; {
+												keydef59697c375f2e1, err := dec.NextKey()
+												if err != nil {
+													return err
+												}
+
+												switch keydef59697c375f2e1 {
+												case "content-length":
+													value339f9c5f797befeb, err := dec.DecodeInt()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Headers.ContentLength = value339f9c5f797befeb
+
+												case "transfer-encoding":
+													value8bd3040cc8d319f5, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Headers.TransferEncoding = value8bd3040cc8d319f5
+
+												case "connection":
+													value6cc75ac7e4b89479, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Headers.Connection = value6cc75ac7e4b89479
+
+												case "cache-control":
+													valuee0af7dc0be396e8e, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Headers.CacheControl = valuee0af7dc0be396e8e
+
+												case "pragma":
+													valueb202a18634a8bb3d, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Headers.Pragma = valueb202a18634a8bb3d
+
+												case "server":
+													value00abe08b31d410f1, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Headers.Server = value00abe08b31d410f1
+
+												case "date":
+													value0453cc439034ad8c, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Response.Headers.Date = value0453cc439034ad8c
+
+												default:
+													if err := dec.SkipValue(); err != nil {
+														return err
+													}
+												}
+												if dec.IsObjectClose() {
+													obj08e9a5f37ce11465--
+												}
+											}
+										}
+									}
+
+								case "status_phrase":
+									valuec3b4f1709f8d7408, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									h.Response.StatusPhrase = valuec3b4f1709f8d7408
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj07187d24de4a5c90--
+								}
+							}
+						}
+					}
+
+				case "version":
+					value4ef4948ba5a66913, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					h.Version = value4ef4948ba5a66913
+
+				case "request":
+					if dec.IsNull() {
+						h.Request = Request{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							h.Request = Request{}
+						} else {
+							for obj27628d2defe91efd := 1; obj27628d2defe91efd > 0; {
+								key2ea660c7f3267db9, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key2ea660c7f3267db9 {
+								case "referrer":
+									value98614fade8528e4b, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									h.Request.Referrer = value98614fade8528e4b
+
+								case "bytes":
+									value66f54c9df852428c, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									h.Request.Bytes = value66f54c9df852428c
+
+								case "headers":
+									if dec.IsNull() {
+										h.Request.Headers = RequestHeaders{}
+									} else if !dec.IsObjectOpen() {
+										return errors.NewParseError(dec.Char(), dec.Cursor())
+									} else {
+										if dec.IsObjectClose() {
+											h.Request.Headers = RequestHeaders{}
+										} else {
+											for objb40ef2b1be8c30ae := 1; objb40ef2b1be8c30ae > 0; {
+												key66ac56240024bc0b, err := dec.NextKey()
+												if err != nil {
+													return err
+												}
+
+												switch key66ac56240024bc0b {
+												case "referer":
+													value259ed7d3182513c6, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.Referer = value259ed7d3182513c6
+
+												case "x-requested-with":
+													valuef5e969cdeb96cdff, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.XRequestedWith = valuef5e969cdeb96cdff
+
+												case "yz_client_ip":
+													valuef0a5c5482110d5f5, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.YzClientIP = valuef0a5c5482110d5f5
+
+												case "user-agent":
+													value89bdb5379408fc9d, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.UserAgent = value89bdb5379408fc9d
+
+												case "accept-language":
+													value87c71585feb54486, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.AcceptLanguage = value87c71585feb54486
+
+												case "content-length":
+													valuec92e94eaa540f6ef, err := dec.DecodeInt()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.ContentLength = valuec92e94eaa540f6ef
+
+												case "x-real-ip":
+													value925410902938a4f6, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.XRealIP = value925410902938a4f6
+
+												case "pragma":
+													valuea08fa75741e38a6a, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.Pragma = valuea08fa75741e38a6a
+
+												case "connection":
+													valueddbb892c0a433ce6, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.Connection = valueddbb892c0a433ce6
+
+												case "accept":
+													value2fc532f9968818a0, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.Accept = value2fc532f9968818a0
+
+												case "host":
+													valued887cdfda62c6d77, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.Host = valued887cdfda62c6d77
+
+												case "x-forwarded-for":
+													value4519fbf515737d45, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.XForwardedFor = value4519fbf515737d45
+
+												case "content-type":
+													value965c5740c0225d34, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													h.Request.Headers.ContentType = value965c5740c0225d34
+
+												default:
+													if err := dec.SkipValue(); err != nil {
+														return err
+													}
+												}
+												if dec.IsObjectClose() {
+													objb40ef2b1be8c30ae--
+												}
+											}
+										}
+									}
+
+								case "method":
+									valuec03e9497d810b9fb, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									h.Request.Method = valuec03e9497d810b9fb
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj27628d2defe91efd--
+								}
+							}
+						}
+					}
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					objdb246b43881c58c8--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (h *Host) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("name", h.Name)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (h *Host) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj7830d722dfff6d0d := 1; obj7830d722dfff6d0d > 0; {
+				key6b73673c68c5b3f5, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key6b73673c68c5b3f5 {
+				case "name":
+					value3229790fc609ef78, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					h.Name = value3229790fc609ef78
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj7830d722dfff6d0d--
 				}
 			}
 		}
@@ -909,13 +1918,13 @@ func (l *LargePayload) MarshalJSON() ([]byte, error) {
 		enc.WriteNull()
 	} else {
 		enc.WriteByte('[')
-		for _, value379e8a31475696ab := range l.Users {
+		for _, value4ee1609864767f46 := range l.Users {
 			enc.WriteComma()
-			if value379e8a31475696ab == nil {
+			if value4ee1609864767f46 == nil {
 				enc.WriteNull()
 			} else {
 				enc.WriteByte('{')
-				enc.EncodeKeyString("username", value379e8a31475696ab.Username)
+				enc.EncodeKeyString("username", value4ee1609864767f46.Username)
 
 				enc.WriteByte('}')
 			}
@@ -931,15 +1940,15 @@ func (l *LargePayload) MarshalJSON() ([]byte, error) {
 			enc.WriteNull()
 		} else {
 			enc.WriteByte('[')
-			for _, value17f978a64313f083 := range l.Topics.Topics {
+			for _, value7124d67d811c8bb5 := range l.Topics.Topics {
 				enc.WriteComma()
-				if value17f978a64313f083 == nil {
+				if value7124d67d811c8bb5 == nil {
 					enc.WriteNull()
 				} else {
 					enc.WriteByte('{')
-					enc.EncodeKeyInt("id", value17f978a64313f083.Id)
+					enc.EncodeKeyInt("id", value7124d67d811c8bb5.Id)
 
-					enc.EncodeKeyString("slug", value17f978a64313f083.Slug)
+					enc.EncodeKeyString("slug", value7124d67d811c8bb5.Slug)
 
 					enc.WriteByte('}')
 				}
@@ -974,13 +1983,13 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for obj156f5ef00a3ed054 := 1; obj156f5ef00a3ed054 > 0; {
-				key72a980d57b6e39fa, err := dec.NextKey()
+			for objcd83726d737bad0c := 1; objcd83726d737bad0c > 0; {
+				keyac61e1338d1b65df, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch key72a980d57b6e39fa {
+				switch keyac61e1338d1b65df {
 				case "users":
 					if char := dec.NextChar(); char == 'n' {
 						if err := dec.AssetNull(); err != nil {
@@ -999,12 +2008,12 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 								l.Users = make(DSUsers, 0, 8)
 							}
 
-							for array05c44c2a6b0c1801 := 1; array05c44c2a6b0c1801 > 0; {
-								var value1193038c94315cef *DSUser
+							for arraye6ed344b12d10866 := 1; arraye6ed344b12d10866 > 0; {
+								var valuee456198462641767 *DSUser
 								if dec.IsNull() {
-									value1193038c94315cef = nil
+									valuee456198462641767 = nil
 								} else {
-									value1193038c94315cef = new(DSUser)
+									valuee456198462641767 = new(DSUser)
 
 									if char := dec.NextChar(); char == 'n' {
 										if err := dec.AssetNull(); err != nil {
@@ -1018,20 +2027,20 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 										if dec.IsObjectClose() {
 											return nil
 										} else {
-											for obj39e38fe8376a5872 := 1; obj39e38fe8376a5872 > 0; {
-												key7eb7d84022692e1e, err := dec.NextKey()
+											for obj9e9753f86c972237 := 1; obj9e9753f86c972237 > 0; {
+												key4e18807b5e35d6b1, err := dec.NextKey()
 												if err != nil {
 													return err
 												}
 
-												switch key7eb7d84022692e1e {
+												switch key4e18807b5e35d6b1 {
 												case "username":
-													value64e4ee14d2b3e23e, err := dec.DecodeString()
+													valueb8073ce642449475, err := dec.DecodeString()
 													if err != nil {
 														return err
 													}
 
-													value1193038c94315cef.Username = value64e4ee14d2b3e23e
+													valuee456198462641767.Username = valueb8073ce642449475
 
 												default:
 													if err := dec.SkipValue(); err != nil {
@@ -1039,17 +2048,17 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 													}
 												}
 												if dec.IsObjectClose() {
-													obj39e38fe8376a5872--
+													obj9e9753f86c972237--
 												}
 											}
 										}
 									}
 								}
-								if value1193038c94315cef != nil {
-									l.Users = append(l.Users, value1193038c94315cef)
+								if valuee456198462641767 != nil {
+									l.Users = append(l.Users, valuee456198462641767)
 								}
 								if dec.IsArrayClose() {
-									array05c44c2a6b0c1801--
+									arraye6ed344b12d10866--
 								}
 							}
 						}
@@ -1068,13 +2077,13 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 								l.Topics = new(DSTopicsList)
 							}
 
-							for obj92c1c776f4a77147 := 1; obj92c1c776f4a77147 > 0; {
-								key2698d3b085335af4, err := dec.NextKey()
+							for obj27e9922923187aac := 1; obj27e9922923187aac > 0; {
+								key7e8142319ac4e978, err := dec.NextKey()
 								if err != nil {
 									return err
 								}
 
-								switch key2698d3b085335af4 {
+								switch key7e8142319ac4e978 {
 								case "topics":
 									if char := dec.NextChar(); char == 'n' {
 										if err := dec.AssetNull(); err != nil {
@@ -1093,12 +2102,12 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 												l.Topics.Topics = make(DSTopics, 0, 8)
 											}
 
-											for arrayb42759d5ae6aa24e := 1; arrayb42759d5ae6aa24e > 0; {
-												var value8a99ae44368ebe88 *DSTopic
+											for array686013877af862b2 := 1; array686013877af862b2 > 0; {
+												var valuee6256ad382cdd7d1 *DSTopic
 												if dec.IsNull() {
-													value8a99ae44368ebe88 = nil
+													valuee6256ad382cdd7d1 = nil
 												} else {
-													value8a99ae44368ebe88 = new(DSTopic)
+													valuee6256ad382cdd7d1 = new(DSTopic)
 
 													if char := dec.NextChar(); char == 'n' {
 														if err := dec.AssetNull(); err != nil {
@@ -1112,28 +2121,28 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 														if dec.IsObjectClose() {
 															return nil
 														} else {
-															for obj9dea6274c0003751 := 1; obj9dea6274c0003751 > 0; {
-																key0884332ded0a59a9, err := dec.NextKey()
+															for obj6eb5f730356fe5e0 := 1; obj6eb5f730356fe5e0 > 0; {
+																key052f62a9ba37741d, err := dec.NextKey()
 																if err != nil {
 																	return err
 																}
 
-																switch key0884332ded0a59a9 {
+																switch key052f62a9ba37741d {
 																case "id":
-																	value6c5fcdcd3ffdcc28, err := dec.DecodeInt()
+																	valueb36901dc5a927782, err := dec.DecodeInt()
 																	if err != nil {
 																		return err
 																	}
 
-																	value8a99ae44368ebe88.Id = value6c5fcdcd3ffdcc28
+																	valuee6256ad382cdd7d1.Id = valueb36901dc5a927782
 
 																case "slug":
-																	value2cebc2e0cd7b7c68, err := dec.DecodeString()
+																	value8bd7ea0db93e6d1a, err := dec.DecodeString()
 																	if err != nil {
 																		return err
 																	}
 
-																	value8a99ae44368ebe88.Slug = value2cebc2e0cd7b7c68
+																	valuee6256ad382cdd7d1.Slug = value8bd7ea0db93e6d1a
 
 																default:
 																	if err := dec.SkipValue(); err != nil {
@@ -1141,29 +2150,29 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 																	}
 																}
 																if dec.IsObjectClose() {
-																	obj9dea6274c0003751--
+																	obj6eb5f730356fe5e0--
 																}
 															}
 														}
 													}
 												}
-												if value8a99ae44368ebe88 != nil {
-													l.Topics.Topics = append(l.Topics.Topics, value8a99ae44368ebe88)
+												if valuee6256ad382cdd7d1 != nil {
+													l.Topics.Topics = append(l.Topics.Topics, valuee6256ad382cdd7d1)
 												}
 												if dec.IsArrayClose() {
-													arrayb42759d5ae6aa24e--
+													array686013877af862b2--
 												}
 											}
 										}
 									}
 
 								case "more_topics_url":
-									valuef9a892ec5e536424, err := dec.DecodeString()
+									value66e8b0c894da962a, err := dec.DecodeString()
 									if err != nil {
 										return err
 									}
 
-									l.Topics.MoreTopicsUrl = valuef9a892ec5e536424
+									l.Topics.MoreTopicsUrl = value66e8b0c894da962a
 
 								default:
 									if err := dec.SkipValue(); err != nil {
@@ -1171,7 +2180,7 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 									}
 								}
 								if dec.IsObjectClose() {
-									obj92c1c776f4a77147--
+									obj27e9922923187aac--
 								}
 							}
 						}
@@ -1183,7 +2192,7 @@ func (l *LargePayload) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					obj156f5ef00a3ed054--
+					objcd83726d737bad0c--
 				}
 			}
 		}
@@ -1222,13 +2231,13 @@ func (m *MediumPayload) MarshalJSON() ([]byte, error) {
 				enc.WriteNull()
 			} else {
 				enc.WriteByte('[')
-				for _, value5049c95a2d9df4db := range m.Person.Gravatar.Avatars {
+				for _, value2addc6d33dbcb6c8 := range m.Person.Gravatar.Avatars {
 					enc.WriteComma()
-					if value5049c95a2d9df4db == nil {
+					if value2addc6d33dbcb6c8 == nil {
 						enc.WriteNull()
 					} else {
 						enc.WriteByte('{')
-						enc.EncodeKeyString("url", value5049c95a2d9df4db.Url)
+						enc.EncodeKeyString("url", value2addc6d33dbcb6c8.Url)
 
 						enc.WriteByte('}')
 					}
@@ -1267,13 +2276,13 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for obja785f5615ce785ac := 1; obja785f5615ce785ac > 0; {
-				keyd108ca1e39974529, err := dec.NextKey()
+			for obj54ad5ff63b907db2 := 1; obj54ad5ff63b907db2 > 0; {
+				key1fd1cefcd0bd15ff, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch keyd108ca1e39974529 {
+				switch key1fd1cefcd0bd15ff {
 				case "person":
 					if dec.IsNull() {
 						m.Person = nil
@@ -1287,13 +2296,13 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 								m.Person = new(CBPerson)
 							}
 
-							for objdb3f9883441f9783 := 1; objdb3f9883441f9783 > 0; {
-								keya41ad111d1d89162, err := dec.NextKey()
+							for objadf8fcccba0f2da0 := 1; objadf8fcccba0f2da0 > 0; {
+								key266e38ba5f5e4283, err := dec.NextKey()
 								if err != nil {
 									return err
 								}
 
-								switch keya41ad111d1d89162 {
+								switch key266e38ba5f5e4283 {
 								case "name":
 									if dec.IsNull() {
 										m.Person.Name = nil
@@ -1307,20 +2316,20 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 												m.Person.Name = new(CBName)
 											}
 
-											for obj18daf4578b33f100 := 1; obj18daf4578b33f100 > 0; {
-												keyb2479e0673363dbb, err := dec.NextKey()
+											for objb4d73940f39e5172 := 1; objb4d73940f39e5172 > 0; {
+												keya8d3edb3565cbcad, err := dec.NextKey()
 												if err != nil {
 													return err
 												}
 
-												switch keyb2479e0673363dbb {
+												switch keya8d3edb3565cbcad {
 												case "fullName":
-													valuec2d380bbadd0b8ef, err := dec.DecodeString()
+													value0188e44c00250db4, err := dec.DecodeString()
 													if err != nil {
 														return err
 													}
 
-													m.Person.Name.FullName = valuec2d380bbadd0b8ef
+													m.Person.Name.FullName = value0188e44c00250db4
 
 												default:
 													if err := dec.SkipValue(); err != nil {
@@ -1328,7 +2337,7 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 													}
 												}
 												if dec.IsObjectClose() {
-													obj18daf4578b33f100--
+													objb4d73940f39e5172--
 												}
 											}
 										}
@@ -1347,20 +2356,20 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 												m.Person.Github = new(CBGithub)
 											}
 
-											for obj7dcb74d7e0b9c916 := 1; obj7dcb74d7e0b9c916 > 0; {
-												key12fad66b0fa74d87, err := dec.NextKey()
+											for objad4cad38378201e5 := 1; objad4cad38378201e5 > 0; {
+												key65d6a6d301f7b6ea, err := dec.NextKey()
 												if err != nil {
 													return err
 												}
 
-												switch key12fad66b0fa74d87 {
+												switch key65d6a6d301f7b6ea {
 												case "followers":
-													value97c7dcec08e3f545, err := dec.DecodeInt()
+													valuec4f8fc6f97f0ab63, err := dec.DecodeInt()
 													if err != nil {
 														return err
 													}
 
-													m.Person.Github.Followers = value97c7dcec08e3f545
+													m.Person.Github.Followers = valuec4f8fc6f97f0ab63
 
 												default:
 													if err := dec.SkipValue(); err != nil {
@@ -1368,7 +2377,7 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 													}
 												}
 												if dec.IsObjectClose() {
-													obj7dcb74d7e0b9c916--
+													objad4cad38378201e5--
 												}
 											}
 										}
@@ -1387,13 +2396,13 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 												m.Person.Gravatar = new(CBGravatar)
 											}
 
-											for obj42edb89ddf1eb925 := 1; obj42edb89ddf1eb925 > 0; {
-												keyd832c9079b14b3d6, err := dec.NextKey()
+											for obj499300b6ed2f7d8d := 1; obj499300b6ed2f7d8d > 0; {
+												keyd8acb8bf1e81377e, err := dec.NextKey()
 												if err != nil {
 													return err
 												}
 
-												switch keyd832c9079b14b3d6 {
+												switch keyd8acb8bf1e81377e {
 												case "avatars":
 													if char := dec.NextChar(); char == 'n' {
 														if err := dec.AssetNull(); err != nil {
@@ -1412,12 +2421,12 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 																m.Person.Gravatar.Avatars = make(Avatars, 0, 8)
 															}
 
-															for arrayf6e34ae3e13fd8aa := 1; arrayf6e34ae3e13fd8aa > 0; {
-																var value1de159b2673efb39 *CBAvatar
+															for array04043ee4d8a70e31 := 1; array04043ee4d8a70e31 > 0; {
+																var valuee99b30eb5c17dbaa *CBAvatar
 																if dec.IsNull() {
-																	value1de159b2673efb39 = nil
+																	valuee99b30eb5c17dbaa = nil
 																} else {
-																	value1de159b2673efb39 = new(CBAvatar)
+																	valuee99b30eb5c17dbaa = new(CBAvatar)
 
 																	if char := dec.NextChar(); char == 'n' {
 																		if err := dec.AssetNull(); err != nil {
@@ -1431,20 +2440,20 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 																		if dec.IsObjectClose() {
 																			return nil
 																		} else {
-																			for obj3cb97675310b4fb4 := 1; obj3cb97675310b4fb4 > 0; {
-																				keyad9ed6979c62459b, err := dec.NextKey()
+																			for objbf8a1ccafc894746 := 1; objbf8a1ccafc894746 > 0; {
+																				keyc69b6f34a46571f3, err := dec.NextKey()
 																				if err != nil {
 																					return err
 																				}
 
-																				switch keyad9ed6979c62459b {
+																				switch keyc69b6f34a46571f3 {
 																				case "url":
-																					valueeb83904df155de24, err := dec.DecodeString()
+																					valuebd1848e8bf832e56, err := dec.DecodeString()
 																					if err != nil {
 																						return err
 																					}
 
-																					value1de159b2673efb39.Url = valueeb83904df155de24
+																					valuee99b30eb5c17dbaa.Url = valuebd1848e8bf832e56
 
 																				default:
 																					if err := dec.SkipValue(); err != nil {
@@ -1452,17 +2461,17 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 																					}
 																				}
 																				if dec.IsObjectClose() {
-																					obj3cb97675310b4fb4--
+																					objbf8a1ccafc894746--
 																				}
 																			}
 																		}
 																	}
 																}
-																if value1de159b2673efb39 != nil {
-																	m.Person.Gravatar.Avatars = append(m.Person.Gravatar.Avatars, value1de159b2673efb39)
+																if valuee99b30eb5c17dbaa != nil {
+																	m.Person.Gravatar.Avatars = append(m.Person.Gravatar.Avatars, valuee99b30eb5c17dbaa)
 																}
 																if dec.IsArrayClose() {
-																	arrayf6e34ae3e13fd8aa--
+																	array04043ee4d8a70e31--
 																}
 															}
 														}
@@ -1474,7 +2483,7 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 													}
 												}
 												if dec.IsObjectClose() {
-													obj42edb89ddf1eb925--
+													obj499300b6ed2f7d8d--
 												}
 											}
 										}
@@ -1486,19 +2495,19 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 									}
 								}
 								if dec.IsObjectClose() {
-									objdb3f9883441f9783--
+									objadf8fcccba0f2da0--
 								}
 							}
 						}
 					}
 
 				case "company":
-					valuecb8ee83fd7af52fa, err := dec.DecodeString()
+					value6400658db665f0d7, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					m.Company = valuecb8ee83fd7af52fa
+					m.Company = value6400658db665f0d7
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -1506,7 +2515,1130 @@ func (m *MediumPayload) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					obja785f5615ce785ac--
+					obj54ad5ff63b907db2--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (m *Metadata) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("beat", m.Beat)
+
+	enc.EncodeKeyString("type", m.Type)
+
+	enc.EncodeKeyString("version", m.Version)
+
+	enc.EncodeKeyString("topic", m.Topic)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (m *Metadata) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj5bbe552a88508b01 := 1; obj5bbe552a88508b01 > 0; {
+				keydc633fa2171eb00d, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keydc633fa2171eb00d {
+				case "beat":
+					value16ac6c2518dd5f0f, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					m.Beat = value16ac6c2518dd5f0f
+
+				case "type":
+					value7411f4e88c09bad0, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					m.Type = value7411f4e88c09bad0
+
+				case "version":
+					value384c627c3a782886, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					m.Version = value384c627c3a782886
+
+				case "topic":
+					valueb79a4216944b0e08, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					m.Topic = valueb79a4216944b0e08
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj5bbe552a88508b01--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (n *Network) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("type", n.Type)
+
+	enc.EncodeKeyString("transport", n.Transport)
+
+	enc.EncodeKeyString("protocol", n.Protocol)
+
+	enc.EncodeKeyString("community_id", n.CommunityID)
+
+	enc.EncodeKeyInt("bytes", n.Bytes)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (n *Network) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for objd19825e5dd803528 := 1; objd19825e5dd803528 > 0; {
+				keybdb12896f89e7bdf, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keybdb12896f89e7bdf {
+				case "type":
+					value3d23e749f3fa97cc, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					n.Type = value3d23e749f3fa97cc
+
+				case "transport":
+					valuec310cba46e2bdba3, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					n.Transport = valuec310cba46e2bdba3
+
+				case "protocol":
+					valueba1e8eda64e85bd3, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					n.Protocol = valueba1e8eda64e85bd3
+
+				case "community_id":
+					value2dcc6f8399fda676, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					n.CommunityID = value2dcc6f8399fda676
+
+				case "bytes":
+					valueb72244925263e7e1, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					n.Bytes = valueb72244925263e7e1
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					objd19825e5dd803528--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (r *Request) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("referrer", r.Referrer)
+
+	enc.EncodeKeyInt("bytes", r.Bytes)
+
+	enc.WriteKey("headers")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("referer", r.Headers.Referer)
+
+	enc.EncodeKeyString("x-requested-with", r.Headers.XRequestedWith)
+
+	enc.EncodeKeyString("yz_client_ip", r.Headers.YzClientIP)
+
+	enc.EncodeKeyString("user-agent", r.Headers.UserAgent)
+
+	enc.EncodeKeyString("accept-language", r.Headers.AcceptLanguage)
+
+	enc.EncodeKeyInt("content-length", r.Headers.ContentLength)
+
+	enc.EncodeKeyString("x-real-ip", r.Headers.XRealIP)
+
+	enc.EncodeKeyString("pragma", r.Headers.Pragma)
+
+	enc.EncodeKeyString("connection", r.Headers.Connection)
+
+	enc.EncodeKeyString("accept", r.Headers.Accept)
+
+	enc.EncodeKeyString("host", r.Headers.Host)
+
+	enc.EncodeKeyString("x-forwarded-for", r.Headers.XForwardedFor)
+
+	enc.EncodeKeyString("content-type", r.Headers.ContentType)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("method", r.Method)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (r *Request) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj1fefe3f2420c906b := 1; obj1fefe3f2420c906b > 0; {
+				key5001b37b8ed2c789, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key5001b37b8ed2c789 {
+				case "referrer":
+					valuea7b01c93c45ce72b, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Referrer = valuea7b01c93c45ce72b
+
+				case "bytes":
+					valueb59e23b075d3f903, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					r.Bytes = valueb59e23b075d3f903
+
+				case "headers":
+					if dec.IsNull() {
+						r.Headers = RequestHeaders{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							r.Headers = RequestHeaders{}
+						} else {
+							for obje554f9ac5692a215 := 1; obje554f9ac5692a215 > 0; {
+								key08f8b5ca77c2c152, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key08f8b5ca77c2c152 {
+								case "referer":
+									valueda44dce36dead6a2, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Referer = valueda44dce36dead6a2
+
+								case "x-requested-with":
+									value8231578bb1c713c9, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.XRequestedWith = value8231578bb1c713c9
+
+								case "yz_client_ip":
+									value944e8461d511a645, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.YzClientIP = value944e8461d511a645
+
+								case "user-agent":
+									value051ea4825d6fbaec, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.UserAgent = value051ea4825d6fbaec
+
+								case "accept-language":
+									value3cec31b35970155a, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.AcceptLanguage = value3cec31b35970155a
+
+								case "content-length":
+									valuee3baa18a2cb71400, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.ContentLength = valuee3baa18a2cb71400
+
+								case "x-real-ip":
+									value45c1ba632d211d92, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.XRealIP = value45c1ba632d211d92
+
+								case "pragma":
+									value8c68ae8544e531de, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Pragma = value8c68ae8544e531de
+
+								case "connection":
+									value2cd9cc94cc67bf7f, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Connection = value2cd9cc94cc67bf7f
+
+								case "accept":
+									value203bacd3a77ce219, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Accept = value203bacd3a77ce219
+
+								case "host":
+									value31ff23ab5653f8ed, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Host = value31ff23ab5653f8ed
+
+								case "x-forwarded-for":
+									value9d8b167c805bb48a, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.XForwardedFor = value9d8b167c805bb48a
+
+								case "content-type":
+									valueb146b0ec418e47f8, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.ContentType = valueb146b0ec418e47f8
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obje554f9ac5692a215--
+								}
+							}
+						}
+					}
+
+				case "method":
+					valuea49dc0682f2c2cb8, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Method = valuea49dc0682f2c2cb8
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj1fefe3f2420c906b--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (r *Body) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("content", r.Content)
+
+	enc.EncodeKeyInt("bytes", r.Bytes)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (r *Body) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj58e67b4236188334 := 1; obj58e67b4236188334 > 0; {
+				key01659397c699bfb3, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key01659397c699bfb3 {
+				case "content":
+					value5babcbe9858e9763, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Content = value5babcbe9858e9763
+
+				case "bytes":
+					value8ff708974ce0a31c, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					r.Bytes = value8ff708974ce0a31c
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj58e67b4236188334--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (r *RequestHeaders) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("referer", r.Referer)
+
+	enc.EncodeKeyString("x-requested-with", r.XRequestedWith)
+
+	enc.EncodeKeyString("yz_client_ip", r.YzClientIP)
+
+	enc.EncodeKeyString("user-agent", r.UserAgent)
+
+	enc.EncodeKeyString("accept-language", r.AcceptLanguage)
+
+	enc.EncodeKeyInt("content-length", r.ContentLength)
+
+	enc.EncodeKeyString("x-real-ip", r.XRealIP)
+
+	enc.EncodeKeyString("pragma", r.Pragma)
+
+	enc.EncodeKeyString("connection", r.Connection)
+
+	enc.EncodeKeyString("accept", r.Accept)
+
+	enc.EncodeKeyString("host", r.Host)
+
+	enc.EncodeKeyString("x-forwarded-for", r.XForwardedFor)
+
+	enc.EncodeKeyString("content-type", r.ContentType)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (r *RequestHeaders) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for objff5daad3bb5648a1 := 1; objff5daad3bb5648a1 > 0; {
+				keyc31e6327e1efcfa6, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keyc31e6327e1efcfa6 {
+				case "referer":
+					valuedeffac244ab15b06, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Referer = valuedeffac244ab15b06
+
+				case "x-requested-with":
+					valuef65136b8fea693a5, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.XRequestedWith = valuef65136b8fea693a5
+
+				case "yz_client_ip":
+					valueb94c3b571e3d4903, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.YzClientIP = valueb94c3b571e3d4903
+
+				case "user-agent":
+					valuefb8161030126662a, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.UserAgent = valuefb8161030126662a
+
+				case "accept-language":
+					valueb193e19010c87c6d, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.AcceptLanguage = valueb193e19010c87c6d
+
+				case "content-length":
+					valuebf07bda1318ae44d, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					r.ContentLength = valuebf07bda1318ae44d
+
+				case "x-real-ip":
+					value39f285a0163eb434, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.XRealIP = value39f285a0163eb434
+
+				case "pragma":
+					value1d53e77749bbaab6, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Pragma = value1d53e77749bbaab6
+
+				case "connection":
+					value8ddf096617b84083, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Connection = value8ddf096617b84083
+
+				case "accept":
+					value24add669cbd13d8c, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Accept = value24add669cbd13d8c
+
+				case "host":
+					value242d094499b1b6a1, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Host = value242d094499b1b6a1
+
+				case "x-forwarded-for":
+					value2ac3b92d2e40659d, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.XForwardedFor = value2ac3b92d2e40659d
+
+				case "content-type":
+					value7a937975fcf943c2, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.ContentType = value7a937975fcf943c2
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					objff5daad3bb5648a1--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (r *Response) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("status_code", r.StatusCode)
+
+	enc.WriteKey("body")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("content", r.Body.Content)
+
+	enc.EncodeKeyInt("bytes", r.Body.Bytes)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyInt("bytes", r.Bytes)
+
+	enc.WriteKey("headers")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("content-length", r.Headers.ContentLength)
+
+	enc.EncodeKeyString("transfer-encoding", r.Headers.TransferEncoding)
+
+	enc.EncodeKeyString("connection", r.Headers.Connection)
+
+	enc.EncodeKeyString("cache-control", r.Headers.CacheControl)
+
+	enc.EncodeKeyString("pragma", r.Headers.Pragma)
+
+	enc.EncodeKeyString("server", r.Headers.Server)
+
+	enc.EncodeKeyString("date", r.Headers.Date)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("status_phrase", r.StatusPhrase)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (r *Response) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj57e5aba30f4da17a := 1; obj57e5aba30f4da17a > 0; {
+				keya06e5bcfcf45432b, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keya06e5bcfcf45432b {
+				case "status_code":
+					valueb49ac41ddb65a379, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					r.StatusCode = valueb49ac41ddb65a379
+
+				case "body":
+					if dec.IsNull() {
+						r.Body = Body{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							r.Body = Body{}
+						} else {
+							for objcca50dde7ebdcee9 := 1; objcca50dde7ebdcee9 > 0; {
+								key71d3ddceed0e0003, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key71d3ddceed0e0003 {
+								case "content":
+									value82d8c53c78f499ea, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Body.Content = value82d8c53c78f499ea
+
+								case "bytes":
+									value1c84e71bc39ae81f, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									r.Body.Bytes = value1c84e71bc39ae81f
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									objcca50dde7ebdcee9--
+								}
+							}
+						}
+					}
+
+				case "bytes":
+					valuec58ccaffbad61fc2, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					r.Bytes = valuec58ccaffbad61fc2
+
+				case "headers":
+					if dec.IsNull() {
+						r.Headers = ResponseHeaders{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							r.Headers = ResponseHeaders{}
+						} else {
+							for obj9827d4053e24b47b := 1; obj9827d4053e24b47b > 0; {
+								key245cdec07ecd46b9, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key245cdec07ecd46b9 {
+								case "content-length":
+									value46a28e8bb1b80abc, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.ContentLength = value46a28e8bb1b80abc
+
+								case "transfer-encoding":
+									value90603c2d7bbc50dc, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.TransferEncoding = value90603c2d7bbc50dc
+
+								case "connection":
+									value5b291a7914b3fa2e, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Connection = value5b291a7914b3fa2e
+
+								case "cache-control":
+									valuee4e7290ae0c16041, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.CacheControl = valuee4e7290ae0c16041
+
+								case "pragma":
+									value5506e27b7088e5e8, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Pragma = value5506e27b7088e5e8
+
+								case "server":
+									value9c472e40d4b1ca2d, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Server = value9c472e40d4b1ca2d
+
+								case "date":
+									valueb5cc13a67771276b, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									r.Headers.Date = valueb5cc13a67771276b
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj9827d4053e24b47b--
+								}
+							}
+						}
+					}
+
+				case "status_phrase":
+					value44f5253676a23261, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.StatusPhrase = value44f5253676a23261
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj57e5aba30f4da17a--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (r *ResponseHeaders) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("content-length", r.ContentLength)
+
+	enc.EncodeKeyString("transfer-encoding", r.TransferEncoding)
+
+	enc.EncodeKeyString("connection", r.Connection)
+
+	enc.EncodeKeyString("cache-control", r.CacheControl)
+
+	enc.EncodeKeyString("pragma", r.Pragma)
+
+	enc.EncodeKeyString("server", r.Server)
+
+	enc.EncodeKeyString("date", r.Date)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (r *ResponseHeaders) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj38b7180c2947a958 := 1; obj38b7180c2947a958 > 0; {
+				key212a8db6e16e1543, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key212a8db6e16e1543 {
+				case "content-length":
+					valuec2ffc341a9a964b8, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					r.ContentLength = valuec2ffc341a9a964b8
+
+				case "transfer-encoding":
+					valuec1ac1c547a946f43, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.TransferEncoding = valuec1ac1c547a946f43
+
+				case "connection":
+					value5e3a1d372762eb13, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Connection = value5e3a1d372762eb13
+
+				case "cache-control":
+					value538f131f8857d693, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.CacheControl = value538f131f8857d693
+
+				case "pragma":
+					value8c736701cd3ff003, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Pragma = value8c736701cd3ff003
+
+				case "server":
+					value1f3b1cb86aca31f2, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Server = value1f3b1cb86aca31f2
+
+				case "date":
+					valuee951c9571c2abb61, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					r.Date = valuee951c9571c2abb61
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj38b7180c2947a958--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (s *Server) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("ip", s.IP)
+
+	enc.EncodeKeyInt("port", s.Port)
+
+	enc.EncodeKeyString("domain", s.Domain)
+
+	enc.EncodeKeyInt("bytes", s.Bytes)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (s *Server) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj03cca33e8082d5f8 := 1; obj03cca33e8082d5f8 > 0; {
+				keycf310fba34049853, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch keycf310fba34049853 {
+				case "ip":
+					valueeaed2bcbf113af4a, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					s.IP = valueeaed2bcbf113af4a
+
+				case "port":
+					valuec3b172d3fe4a9df1, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					s.Port = valuec3b172d3fe4a9df1
+
+				case "domain":
+					value32e682360292482e, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					s.Domain = value32e682360292482e
+
+				case "bytes":
+					value5dda353f277fcd7b, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					s.Bytes = value5dda353f277fcd7b
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj03cca33e8082d5f8--
 				}
 			}
 		}
@@ -1561,84 +3693,84 @@ func (s *SmallPayload) UnmarshalJSON(data []byte) error {
 		if dec.IsObjectClose() {
 			return nil
 		} else {
-			for objdd98bc4457ab9f11 := 1; objdd98bc4457ab9f11 > 0; {
-				keyab80752ada368a12, err := dec.NextKey()
+			for objdeb6a796154fb10d := 1; objdeb6a796154fb10d > 0; {
+				key675f5969d943948c, err := dec.NextKey()
 				if err != nil {
 					return err
 				}
 
-				switch keyab80752ada368a12 {
+				switch key675f5969d943948c {
 				case "st":
-					value5e7e006c87b5a679, err := dec.DecodeInt()
+					value6873b95e9920d97c, err := dec.DecodeInt()
 					if err != nil {
 						return err
 					}
 
-					s.St = value5e7e006c87b5a679
+					s.St = value6873b95e9920d97c
 
 				case "sid":
-					value59e29df9e1e2d024, err := dec.DecodeInt()
+					value4a4911699e88583b, err := dec.DecodeInt()
 					if err != nil {
 						return err
 					}
 
-					s.Sid = value59e29df9e1e2d024
+					s.Sid = value4a4911699e88583b
 
 				case "tt":
-					valuefdc571957bf549ae, err := dec.DecodeString()
+					value160c47148e45027e, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					s.Tt = valuefdc571957bf549ae
+					s.Tt = value160c47148e45027e
 
 				case "gr":
-					value7ff9a1f646942dae, err := dec.DecodeInt()
+					value6f48ca701bc9f800, err := dec.DecodeInt()
 					if err != nil {
 						return err
 					}
 
-					s.Gr = value7ff9a1f646942dae
+					s.Gr = value6f48ca701bc9f800
 
 				case "uuid":
-					value4e42da0455eefb46, err := dec.DecodeString()
+					value5f481cb9036330b8, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					s.Uuid = value4e42da0455eefb46
+					s.Uuid = value5f481cb9036330b8
 
 				case "ip":
-					value0f865cd07f1e2f7b, err := dec.DecodeString()
+					valuef134eb4d60733779, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					s.Ip = value0f865cd07f1e2f7b
+					s.Ip = valuef134eb4d60733779
 
 				case "ua":
-					valued8d285178a783aa8, err := dec.DecodeString()
+					valuedc2c26d9bb6bd29b, err := dec.DecodeString()
 					if err != nil {
 						return err
 					}
 
-					s.Ua = valued8d285178a783aa8
+					s.Ua = valuedc2c26d9bb6bd29b
 
 				case "tz":
-					valuefc23ae9ae32134ff, err := dec.DecodeInt()
+					value5e1e0b7d548828b2, err := dec.DecodeInt()
 					if err != nil {
 						return err
 					}
 
-					s.Tz = valuefc23ae9ae32134ff
+					s.Tz = value5e1e0b7d548828b2
 
 				case "v":
-					value4bab422f130861dd, err := dec.DecodeInt()
+					value359929abd13685d3, err := dec.DecodeInt()
 					if err != nil {
 						return err
 					}
 
-					s.V = value4bab422f130861dd
+					s.V = value359929abd13685d3
 
 				default:
 					if err := dec.SkipValue(); err != nil {
@@ -1646,7 +3778,1696 @@ func (s *SmallPayload) UnmarshalJSON(data []byte) error {
 					}
 				}
 				if dec.IsObjectClose() {
-					objdd98bc4457ab9f11--
+					objdeb6a796154fb10d--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (s *Source) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("bytes", s.Bytes)
+
+	enc.EncodeKeyString("ip", s.IP)
+
+	enc.EncodeKeyInt("port", s.Port)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (s *Source) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj9aa4a64637784afe := 1; obj9aa4a64637784afe > 0; {
+				key32536e3344c36ef5, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key32536e3344c36ef5 {
+				case "bytes":
+					value1051c7229b1b4877, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					s.Bytes = value1051c7229b1b4877
+
+				case "ip":
+					value5665d33dd8c09fc0, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					s.IP = value5665d33dd8c09fc0
+
+				case "port":
+					value2ba7fa4877b3db7c, err := dec.DecodeInt()
+					if err != nil {
+						return err
+					}
+
+					s.Port = value2ba7fa4877b3db7c
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj9aa4a64637784afe--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (t *TestLargeStruct) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.WriteKey("@timestamp")
+	data7b56f84b8be3fe1a, err := t.Timestamp.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	enc.WriteBytes(data7b56f84b8be3fe1a)
+	enc.WriteKey("@metadata")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("beat", t.Metadata.Beat)
+
+	enc.EncodeKeyString("type", t.Metadata.Type)
+
+	enc.EncodeKeyString("version", t.Metadata.Version)
+
+	enc.EncodeKeyString("topic", t.Metadata.Topic)
+
+	enc.WriteByte('}')
+	enc.WriteKey("ecs")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("version", t.Ecs.Version)
+
+	enc.WriteByte('}')
+	enc.WriteKey("host")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("name", t.Host.Name)
+
+	enc.WriteByte('}')
+	enc.WriteKey("server")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("ip", t.Server.IP)
+
+	enc.EncodeKeyInt("port", t.Server.Port)
+
+	enc.EncodeKeyString("domain", t.Server.Domain)
+
+	enc.EncodeKeyInt("bytes", t.Server.Bytes)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("status", t.Status)
+
+	enc.WriteKey("source")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("bytes", t.Source.Bytes)
+
+	enc.EncodeKeyString("ip", t.Source.IP)
+
+	enc.EncodeKeyInt("port", t.Source.Port)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("method", t.Method)
+
+	enc.WriteKey("http")
+	enc.WriteByte('{')
+	enc.WriteKey("response")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("status_code", t.HTTP.Response.StatusCode)
+
+	enc.WriteKey("body")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("content", t.HTTP.Response.Body.Content)
+
+	enc.EncodeKeyInt("bytes", t.HTTP.Response.Body.Bytes)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyInt("bytes", t.HTTP.Response.Bytes)
+
+	enc.WriteKey("headers")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("content-length", t.HTTP.Response.Headers.ContentLength)
+
+	enc.EncodeKeyString("transfer-encoding", t.HTTP.Response.Headers.TransferEncoding)
+
+	enc.EncodeKeyString("connection", t.HTTP.Response.Headers.Connection)
+
+	enc.EncodeKeyString("cache-control", t.HTTP.Response.Headers.CacheControl)
+
+	enc.EncodeKeyString("pragma", t.HTTP.Response.Headers.Pragma)
+
+	enc.EncodeKeyString("server", t.HTTP.Response.Headers.Server)
+
+	enc.EncodeKeyString("date", t.HTTP.Response.Headers.Date)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("status_phrase", t.HTTP.Response.StatusPhrase)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("version", t.HTTP.Version)
+
+	enc.WriteKey("request")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("referrer", t.HTTP.Request.Referrer)
+
+	enc.EncodeKeyInt("bytes", t.HTTP.Request.Bytes)
+
+	enc.WriteKey("headers")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("referer", t.HTTP.Request.Headers.Referer)
+
+	enc.EncodeKeyString("x-requested-with", t.HTTP.Request.Headers.XRequestedWith)
+
+	enc.EncodeKeyString("yz_client_ip", t.HTTP.Request.Headers.YzClientIP)
+
+	enc.EncodeKeyString("user-agent", t.HTTP.Request.Headers.UserAgent)
+
+	enc.EncodeKeyString("accept-language", t.HTTP.Request.Headers.AcceptLanguage)
+
+	enc.EncodeKeyInt("content-length", t.HTTP.Request.Headers.ContentLength)
+
+	enc.EncodeKeyString("x-real-ip", t.HTTP.Request.Headers.XRealIP)
+
+	enc.EncodeKeyString("pragma", t.HTTP.Request.Headers.Pragma)
+
+	enc.EncodeKeyString("connection", t.HTTP.Request.Headers.Connection)
+
+	enc.EncodeKeyString("accept", t.HTTP.Request.Headers.Accept)
+
+	enc.EncodeKeyString("host", t.HTTP.Request.Headers.Host)
+
+	enc.EncodeKeyString("x-forwarded-for", t.HTTP.Request.Headers.XForwardedFor)
+
+	enc.EncodeKeyString("content-type", t.HTTP.Request.Headers.ContentType)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("method", t.HTTP.Request.Method)
+
+	enc.WriteByte('}')
+	enc.WriteByte('}')
+	enc.WriteKey("network")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("type", t.Network.Type)
+
+	enc.EncodeKeyString("transport", t.Network.Transport)
+
+	enc.EncodeKeyString("protocol", t.Network.Protocol)
+
+	enc.EncodeKeyString("community_id", t.Network.CommunityID)
+
+	enc.EncodeKeyInt("bytes", t.Network.Bytes)
+
+	enc.WriteByte('}')
+	enc.WriteKey("url")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("path", t.URL.Path)
+
+	enc.EncodeKeyString("query", t.URL.Query)
+
+	enc.EncodeKeyString("full", t.URL.Full)
+
+	enc.EncodeKeyString("scheme", t.URL.Scheme)
+
+	enc.EncodeKeyString("domain", t.URL.Domain)
+
+	enc.WriteByte('}')
+	enc.WriteKey("client")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("bytes", t.Client.Bytes)
+
+	enc.EncodeKeyString("ip", t.Client.IP)
+
+	enc.EncodeKeyInt("port", t.Client.Port)
+
+	enc.WriteByte('}')
+	enc.WriteKey("event")
+	enc.WriteByte('{')
+	enc.EncodeKeyInt("duration", t.Event.Duration)
+
+	enc.WriteKey("start")
+	data75b8f5e2fe812665, err := t.Event.Start.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	enc.WriteBytes(data75b8f5e2fe812665)
+	enc.WriteKey("end")
+	datab1d63d9d247148e1, err := t.Event.End.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	enc.WriteBytes(datab1d63d9d247148e1)
+	enc.EncodeKeyString("kind", t.Event.Kind)
+
+	enc.EncodeKeyString("category", t.Event.Category)
+
+	enc.EncodeKeyString("dataset", t.Event.Dataset)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("query", t.Query)
+
+	enc.WriteKey("user_agent")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("original", t.UserAgent.Original)
+
+	enc.WriteByte('}')
+	enc.WriteKey("destination")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("ip", t.Destination.IP)
+
+	enc.EncodeKeyInt("port", t.Destination.Port)
+
+	enc.EncodeKeyString("domain", t.Destination.Domain)
+
+	enc.EncodeKeyInt("bytes", t.Destination.Bytes)
+
+	enc.WriteByte('}')
+	enc.EncodeKeyString("type", t.Type)
+
+	enc.WriteKey("agent")
+	enc.WriteByte('{')
+	enc.EncodeKeyString("hostname", t.Agent.Hostname)
+
+	enc.EncodeKeyString("id", t.Agent.ID)
+
+	enc.EncodeKeyString("version", t.Agent.Version)
+
+	enc.EncodeKeyString("type", t.Agent.Type)
+
+	enc.EncodeKeyString("ephemeral_id", t.Agent.EphemeralID)
+
+	enc.WriteByte('}')
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (t *TestLargeStruct) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for objacf6d7ea085aed41 := 1; objacf6d7ea085aed41 > 0; {
+				key71e01605749c9525, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key71e01605749c9525 {
+				case "@timestamp":
+					data2a41e966ef5ed50d, err := dec.ReadValue()
+					if err != nil {
+						return nil
+					}
+
+					if err := t.Timestamp.UnmarshalJSON(data2a41e966ef5ed50d); err != nil {
+						return err
+					}
+
+				case "@metadata":
+					if dec.IsNull() {
+						t.Metadata = Metadata{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Metadata = Metadata{}
+						} else {
+							for obj6d3a69525fa883a2 := 1; obj6d3a69525fa883a2 > 0; {
+								keyc942e374af7353fb, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch keyc942e374af7353fb {
+								case "beat":
+									valueca2558865a9002bd, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Metadata.Beat = valueca2558865a9002bd
+
+								case "type":
+									valued4d53bda9b6e0230, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Metadata.Type = valued4d53bda9b6e0230
+
+								case "version":
+									value05f9174609825075, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Metadata.Version = value05f9174609825075
+
+								case "topic":
+									value1b6993f466e230b1, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Metadata.Topic = value1b6993f466e230b1
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj6d3a69525fa883a2--
+								}
+							}
+						}
+					}
+
+				case "ecs":
+					if dec.IsNull() {
+						t.Ecs = Ecs{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Ecs = Ecs{}
+						} else {
+							for obj4234aac118af54d1 := 1; obj4234aac118af54d1 > 0; {
+								key754d308254a1f7c2, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key754d308254a1f7c2 {
+								case "version":
+									value7e8837ca5ab80b3e, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Ecs.Version = value7e8837ca5ab80b3e
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj4234aac118af54d1--
+								}
+							}
+						}
+					}
+
+				case "host":
+					if dec.IsNull() {
+						t.Host = Host{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Host = Host{}
+						} else {
+							for obj899e812efa8645d1 := 1; obj899e812efa8645d1 > 0; {
+								key8414b85bb8488852, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key8414b85bb8488852 {
+								case "name":
+									valuecf6d89f3479c9732, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Host.Name = valuecf6d89f3479c9732
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj899e812efa8645d1--
+								}
+							}
+						}
+					}
+
+				case "server":
+					if dec.IsNull() {
+						t.Server = Server{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Server = Server{}
+						} else {
+							for objb1211588858ca54b := 1; objb1211588858ca54b > 0; {
+								key0fc6d642baf6bd26, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key0fc6d642baf6bd26 {
+								case "ip":
+									value0c5b55619b85a7f0, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Server.IP = value0c5b55619b85a7f0
+
+								case "port":
+									valuec5962e64af5704cd, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Server.Port = valuec5962e64af5704cd
+
+								case "domain":
+									valueef1c40660f36e8e1, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Server.Domain = valueef1c40660f36e8e1
+
+								case "bytes":
+									value2d4b97c380cb8d7b, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Server.Bytes = value2d4b97c380cb8d7b
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									objb1211588858ca54b--
+								}
+							}
+						}
+					}
+
+				case "status":
+					value37637e74c072640b, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					t.Status = value37637e74c072640b
+
+				case "source":
+					if dec.IsNull() {
+						t.Source = Source{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Source = Source{}
+						} else {
+							for obj6e0cb4ec873f39fe := 1; obj6e0cb4ec873f39fe > 0; {
+								keybb90dd75f63864d0, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch keybb90dd75f63864d0 {
+								case "bytes":
+									value6404d77fb7055259, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Source.Bytes = value6404d77fb7055259
+
+								case "ip":
+									valuebec322857938087d, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Source.IP = valuebec322857938087d
+
+								case "port":
+									value8cd34b7a03e85d0b, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Source.Port = value8cd34b7a03e85d0b
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj6e0cb4ec873f39fe--
+								}
+							}
+						}
+					}
+
+				case "method":
+					value737ccad071225318, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					t.Method = value737ccad071225318
+
+				case "http":
+					if dec.IsNull() {
+						t.HTTP = HTTP{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.HTTP = HTTP{}
+						} else {
+							for obj21a019c02dcdbf83 := 1; obj21a019c02dcdbf83 > 0; {
+								key5b2ef298477e1356, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key5b2ef298477e1356 {
+								case "response":
+									if dec.IsNull() {
+										t.HTTP.Response = Response{}
+									} else if !dec.IsObjectOpen() {
+										return errors.NewParseError(dec.Char(), dec.Cursor())
+									} else {
+										if dec.IsObjectClose() {
+											t.HTTP.Response = Response{}
+										} else {
+											for objf09977aaf07a7877 := 1; objf09977aaf07a7877 > 0; {
+												key24e5c2d4bcdff4a5, err := dec.NextKey()
+												if err != nil {
+													return err
+												}
+
+												switch key24e5c2d4bcdff4a5 {
+												case "status_code":
+													value4b5f55e9110c2ea7, err := dec.DecodeInt()
+													if err != nil {
+														return err
+													}
+
+													t.HTTP.Response.StatusCode = value4b5f55e9110c2ea7
+
+												case "body":
+													if dec.IsNull() {
+														t.HTTP.Response.Body = Body{}
+													} else if !dec.IsObjectOpen() {
+														return errors.NewParseError(dec.Char(), dec.Cursor())
+													} else {
+														if dec.IsObjectClose() {
+															t.HTTP.Response.Body = Body{}
+														} else {
+															for obj8ee0be0737f45707 := 1; obj8ee0be0737f45707 > 0; {
+																key719e1f36922bd8ed, err := dec.NextKey()
+																if err != nil {
+																	return err
+																}
+
+																switch key719e1f36922bd8ed {
+																case "content":
+																	value725c4a0f9772300e, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Body.Content = value725c4a0f9772300e
+
+																case "bytes":
+																	value712ecf175c040731, err := dec.DecodeInt()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Body.Bytes = value712ecf175c040731
+
+																default:
+																	if err := dec.SkipValue(); err != nil {
+																		return err
+																	}
+																}
+																if dec.IsObjectClose() {
+																	obj8ee0be0737f45707--
+																}
+															}
+														}
+													}
+
+												case "bytes":
+													valued8b7358c804dfdf2, err := dec.DecodeInt()
+													if err != nil {
+														return err
+													}
+
+													t.HTTP.Response.Bytes = valued8b7358c804dfdf2
+
+												case "headers":
+													if dec.IsNull() {
+														t.HTTP.Response.Headers = ResponseHeaders{}
+													} else if !dec.IsObjectOpen() {
+														return errors.NewParseError(dec.Char(), dec.Cursor())
+													} else {
+														if dec.IsObjectClose() {
+															t.HTTP.Response.Headers = ResponseHeaders{}
+														} else {
+															for objc7c0cbf54084bdde := 1; objc7c0cbf54084bdde > 0; {
+																key5beff1eabaf85a2b, err := dec.NextKey()
+																if err != nil {
+																	return err
+																}
+
+																switch key5beff1eabaf85a2b {
+																case "content-length":
+																	valueba761c1172023b1d, err := dec.DecodeInt()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Headers.ContentLength = valueba761c1172023b1d
+
+																case "transfer-encoding":
+																	value77472334420ef065, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Headers.TransferEncoding = value77472334420ef065
+
+																case "connection":
+																	value73cb88b059d864c0, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Headers.Connection = value73cb88b059d864c0
+
+																case "cache-control":
+																	value95f68c8e0c5e732e, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Headers.CacheControl = value95f68c8e0c5e732e
+
+																case "pragma":
+																	value1971c87ea5452c0f, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Headers.Pragma = value1971c87ea5452c0f
+
+																case "server":
+																	value880c80e3146264b5, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Headers.Server = value880c80e3146264b5
+
+																case "date":
+																	valued0749b088679e0fb, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Response.Headers.Date = valued0749b088679e0fb
+
+																default:
+																	if err := dec.SkipValue(); err != nil {
+																		return err
+																	}
+																}
+																if dec.IsObjectClose() {
+																	objc7c0cbf54084bdde--
+																}
+															}
+														}
+													}
+
+												case "status_phrase":
+													valueb8cff998aaf24192, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													t.HTTP.Response.StatusPhrase = valueb8cff998aaf24192
+
+												default:
+													if err := dec.SkipValue(); err != nil {
+														return err
+													}
+												}
+												if dec.IsObjectClose() {
+													objf09977aaf07a7877--
+												}
+											}
+										}
+									}
+
+								case "version":
+									value4f32763f47763ba1, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.HTTP.Version = value4f32763f47763ba1
+
+								case "request":
+									if dec.IsNull() {
+										t.HTTP.Request = Request{}
+									} else if !dec.IsObjectOpen() {
+										return errors.NewParseError(dec.Char(), dec.Cursor())
+									} else {
+										if dec.IsObjectClose() {
+											t.HTTP.Request = Request{}
+										} else {
+											for objf0590d13a8d62d88 := 1; objf0590d13a8d62d88 > 0; {
+												key3536b1d2b6094c70, err := dec.NextKey()
+												if err != nil {
+													return err
+												}
+
+												switch key3536b1d2b6094c70 {
+												case "referrer":
+													value9537ae709edbdcfd, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													t.HTTP.Request.Referrer = value9537ae709edbdcfd
+
+												case "bytes":
+													valueb35df7f03b25ffdc, err := dec.DecodeInt()
+													if err != nil {
+														return err
+													}
+
+													t.HTTP.Request.Bytes = valueb35df7f03b25ffdc
+
+												case "headers":
+													if dec.IsNull() {
+														t.HTTP.Request.Headers = RequestHeaders{}
+													} else if !dec.IsObjectOpen() {
+														return errors.NewParseError(dec.Char(), dec.Cursor())
+													} else {
+														if dec.IsObjectClose() {
+															t.HTTP.Request.Headers = RequestHeaders{}
+														} else {
+															for obj49bbde101f23b346 := 1; obj49bbde101f23b346 > 0; {
+																keye448fdf149fd4ecc, err := dec.NextKey()
+																if err != nil {
+																	return err
+																}
+
+																switch keye448fdf149fd4ecc {
+																case "referer":
+																	valuef1bbeb0beed8a8b9, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.Referer = valuef1bbeb0beed8a8b9
+
+																case "x-requested-with":
+																	value02a49835d2288e3e, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.XRequestedWith = value02a49835d2288e3e
+
+																case "yz_client_ip":
+																	valueb9eb349377976d03, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.YzClientIP = valueb9eb349377976d03
+
+																case "user-agent":
+																	valuef826a4c51d1bd5ff, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.UserAgent = valuef826a4c51d1bd5ff
+
+																case "accept-language":
+																	value4bfcb845e7ec9039, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.AcceptLanguage = value4bfcb845e7ec9039
+
+																case "content-length":
+																	value5dc03b0b323c4247, err := dec.DecodeInt()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.ContentLength = value5dc03b0b323c4247
+
+																case "x-real-ip":
+																	value7ec90f60d30f11c5, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.XRealIP = value7ec90f60d30f11c5
+
+																case "pragma":
+																	value1bc62ebeecac8620, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.Pragma = value1bc62ebeecac8620
+
+																case "connection":
+																	value0571f1933d1a2863, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.Connection = value0571f1933d1a2863
+
+																case "accept":
+																	value4d0b240fcbb423f4, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.Accept = value4d0b240fcbb423f4
+
+																case "host":
+																	valueee747ab6677c2767, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.Host = valueee747ab6677c2767
+
+																case "x-forwarded-for":
+																	value80cabd0b43e380ca, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.XForwardedFor = value80cabd0b43e380ca
+
+																case "content-type":
+																	value8ea0c65a7064f96a, err := dec.DecodeString()
+																	if err != nil {
+																		return err
+																	}
+
+																	t.HTTP.Request.Headers.ContentType = value8ea0c65a7064f96a
+
+																default:
+																	if err := dec.SkipValue(); err != nil {
+																		return err
+																	}
+																}
+																if dec.IsObjectClose() {
+																	obj49bbde101f23b346--
+																}
+															}
+														}
+													}
+
+												case "method":
+													value095f3a537c437670, err := dec.DecodeString()
+													if err != nil {
+														return err
+													}
+
+													t.HTTP.Request.Method = value095f3a537c437670
+
+												default:
+													if err := dec.SkipValue(); err != nil {
+														return err
+													}
+												}
+												if dec.IsObjectClose() {
+													objf0590d13a8d62d88--
+												}
+											}
+										}
+									}
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj21a019c02dcdbf83--
+								}
+							}
+						}
+					}
+
+				case "network":
+					if dec.IsNull() {
+						t.Network = Network{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Network = Network{}
+						} else {
+							for obj774c3bdb8fe3f66a := 1; obj774c3bdb8fe3f66a > 0; {
+								keyd13816b35f365849, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch keyd13816b35f365849 {
+								case "type":
+									valuefde49d0f3bc23761, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Network.Type = valuefde49d0f3bc23761
+
+								case "transport":
+									valued9ce97a7779597a6, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Network.Transport = valued9ce97a7779597a6
+
+								case "protocol":
+									value96e4dde63c123a40, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Network.Protocol = value96e4dde63c123a40
+
+								case "community_id":
+									value33a8753fd9180a34, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Network.CommunityID = value33a8753fd9180a34
+
+								case "bytes":
+									value2769552de762a5be, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Network.Bytes = value2769552de762a5be
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj774c3bdb8fe3f66a--
+								}
+							}
+						}
+					}
+
+				case "url":
+					if dec.IsNull() {
+						t.URL = URL{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.URL = URL{}
+						} else {
+							for objdf37ea4beb5cc8c2 := 1; objdf37ea4beb5cc8c2 > 0; {
+								key83b98047298e55b5, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key83b98047298e55b5 {
+								case "path":
+									valuef355d8251659a6a4, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.URL.Path = valuef355d8251659a6a4
+
+								case "query":
+									value6481e8a2cf861cda, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.URL.Query = value6481e8a2cf861cda
+
+								case "full":
+									value2b22c94c964f9a53, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.URL.Full = value2b22c94c964f9a53
+
+								case "scheme":
+									value7c3f2b4f57cce6d4, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.URL.Scheme = value7c3f2b4f57cce6d4
+
+								case "domain":
+									valuea940bc33dfc4fba6, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.URL.Domain = valuea940bc33dfc4fba6
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									objdf37ea4beb5cc8c2--
+								}
+							}
+						}
+					}
+
+				case "client":
+					if dec.IsNull() {
+						t.Client = Client{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Client = Client{}
+						} else {
+							for obj4c3a26576c1b3930 := 1; obj4c3a26576c1b3930 > 0; {
+								key57770420d56d8951, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key57770420d56d8951 {
+								case "bytes":
+									value7bdb684a341f30dc, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Client.Bytes = value7bdb684a341f30dc
+
+								case "ip":
+									valuec8c83d82ba397c37, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Client.IP = valuec8c83d82ba397c37
+
+								case "port":
+									value923611deafc1d091, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Client.Port = value923611deafc1d091
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj4c3a26576c1b3930--
+								}
+							}
+						}
+					}
+
+				case "event":
+					if dec.IsNull() {
+						t.Event = Event{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Event = Event{}
+						} else {
+							for obje1da0bf696e6e6ee := 1; obje1da0bf696e6e6ee > 0; {
+								keye2fc3b80fa8db0ea, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch keye2fc3b80fa8db0ea {
+								case "duration":
+									value4d855a27a816098c, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Event.Duration = value4d855a27a816098c
+
+								case "start":
+									data2ec1ef403bfa68af, err := dec.ReadValue()
+									if err != nil {
+										return nil
+									}
+
+									if err := t.Event.Start.UnmarshalJSON(data2ec1ef403bfa68af); err != nil {
+										return err
+									}
+
+								case "end":
+									data0c2387a9270534dc, err := dec.ReadValue()
+									if err != nil {
+										return nil
+									}
+
+									if err := t.Event.End.UnmarshalJSON(data0c2387a9270534dc); err != nil {
+										return err
+									}
+
+								case "kind":
+									value362491086ad54de9, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Event.Kind = value362491086ad54de9
+
+								case "category":
+									value20e5e1dc2d574894, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Event.Category = value20e5e1dc2d574894
+
+								case "dataset":
+									value386d3cee0e6db348, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Event.Dataset = value386d3cee0e6db348
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obje1da0bf696e6e6ee--
+								}
+							}
+						}
+					}
+
+				case "query":
+					value0ba4e853212d5d24, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					t.Query = value0ba4e853212d5d24
+
+				case "user_agent":
+					if dec.IsNull() {
+						t.UserAgent = UserAgent{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.UserAgent = UserAgent{}
+						} else {
+							for obj26876550d30262a2 := 1; obj26876550d30262a2 > 0; {
+								key49fbc364783f4788, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key49fbc364783f4788 {
+								case "original":
+									value70eaf5a5b2d26658, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.UserAgent.Original = value70eaf5a5b2d26658
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj26876550d30262a2--
+								}
+							}
+						}
+					}
+
+				case "destination":
+					if dec.IsNull() {
+						t.Destination = Destination{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Destination = Destination{}
+						} else {
+							for obj40c4f5dd2210d1a5 := 1; obj40c4f5dd2210d1a5 > 0; {
+								keydacab648e2e92101, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch keydacab648e2e92101 {
+								case "ip":
+									valuece7c93f6ef7589d0, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Destination.IP = valuece7c93f6ef7589d0
+
+								case "port":
+									value1e4e31fbe12990a2, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Destination.Port = value1e4e31fbe12990a2
+
+								case "domain":
+									valueb50a2f0a90a431f6, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Destination.Domain = valueb50a2f0a90a431f6
+
+								case "bytes":
+									value7d022286b2481a42, err := dec.DecodeInt()
+									if err != nil {
+										return err
+									}
+
+									t.Destination.Bytes = value7d022286b2481a42
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj40c4f5dd2210d1a5--
+								}
+							}
+						}
+					}
+
+				case "type":
+					value5eafea1ea6077619, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					t.Type = value5eafea1ea6077619
+
+				case "agent":
+					if dec.IsNull() {
+						t.Agent = Agent{}
+					} else if !dec.IsObjectOpen() {
+						return errors.NewParseError(dec.Char(), dec.Cursor())
+					} else {
+						if dec.IsObjectClose() {
+							t.Agent = Agent{}
+						} else {
+							for obj2ace1eca6b261f37 := 1; obj2ace1eca6b261f37 > 0; {
+								key33625901a9231d3b, err := dec.NextKey()
+								if err != nil {
+									return err
+								}
+
+								switch key33625901a9231d3b {
+								case "hostname":
+									value51de06cbd672405f, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Agent.Hostname = value51de06cbd672405f
+
+								case "id":
+									value3c3c36931ef8f499, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Agent.ID = value3c3c36931ef8f499
+
+								case "version":
+									value79d2a15548bf3827, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Agent.Version = value79d2a15548bf3827
+
+								case "type":
+									value70f62bac563f5b84, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Agent.Type = value70f62bac563f5b84
+
+								case "ephemeral_id":
+									value23307611653f4959, err := dec.DecodeString()
+									if err != nil {
+										return err
+									}
+
+									t.Agent.EphemeralID = value23307611653f4959
+
+								default:
+									if err := dec.SkipValue(); err != nil {
+										return err
+									}
+								}
+								if dec.IsObjectClose() {
+									obj2ace1eca6b261f37--
+								}
+							}
+						}
+					}
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					objacf6d7ea085aed41--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (t *TestStruct) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("a", t.A)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (t *TestStruct) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for objde7244b4e23c4682 := 1; objde7244b4e23c4682 > 0; {
+				key39e960f6a8d4d410, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key39e960f6a8d4d410 {
+				case "a":
+					value621419e75af949d4, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					t.A = value621419e75af949d4
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					objde7244b4e23c4682--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (u *URL) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("path", u.Path)
+
+	enc.EncodeKeyString("query", u.Query)
+
+	enc.EncodeKeyString("full", u.Full)
+
+	enc.EncodeKeyString("scheme", u.Scheme)
+
+	enc.EncodeKeyString("domain", u.Domain)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (u *URL) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj82c4efae72885b92 := 1; obj82c4efae72885b92 > 0; {
+				key5f31a1d261dd028b, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key5f31a1d261dd028b {
+				case "path":
+					valueff23f42636290f42, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					u.Path = valueff23f42636290f42
+
+				case "query":
+					valued0073ccf8ef25b4a, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					u.Query = valued0073ccf8ef25b4a
+
+				case "full":
+					value33f92417d7c203b2, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					u.Full = value33f92417d7c203b2
+
+				case "scheme":
+					value6aaabfa5c070e1a3, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					u.Scheme = value6aaabfa5c070e1a3
+
+				case "domain":
+					value94369385001b4d68, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					u.Domain = value94369385001b4d68
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj82c4efae72885b92--
+				}
+			}
+		}
+	}
+	dec.Release()
+
+	return nil
+}
+
+func (u *UserAgent) MarshalJSON() ([]byte, error) {
+	enc := backend.NewEncoder()
+
+	enc.WriteByte('{')
+	enc.EncodeKeyString("original", u.Original)
+
+	enc.WriteByte('}')
+	data := enc.Bytes()
+	enc.Release()
+
+	return data, nil
+}
+
+func (u *UserAgent) UnmarshalJSON(data []byte) error {
+	dec := backend.NewDecoder()
+	dec.SetUnsafeData(data)
+
+	if char := dec.NextChar(); char == 'n' {
+		if err := dec.AssetNull(); err != nil {
+			return err
+		}
+
+	} else if char != '{' {
+		return errors.NewParseError(dec.Char(), dec.Cursor())
+	} else {
+		dec.Next()
+		if dec.IsObjectClose() {
+			return nil
+		} else {
+			for obj27ef29984b01e0cb := 1; obj27ef29984b01e0cb > 0; {
+				key74633a90a7ab6c9b, err := dec.NextKey()
+				if err != nil {
+					return err
+				}
+
+				switch key74633a90a7ab6c9b {
+				case "original":
+					value2fc204f328a62ec7, err := dec.DecodeString()
+					if err != nil {
+						return err
+					}
+
+					u.Original = value2fc204f328a62ec7
+
+				default:
+					if err := dec.SkipValue(); err != nil {
+						return err
+					}
+				}
+				if dec.IsObjectClose() {
+					obj27ef29984b01e0cb--
 				}
 			}
 		}

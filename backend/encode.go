@@ -22,7 +22,7 @@ func (e *Encoder) Release() {
 }
 
 func (e *Encoder) reset() {
-	e.data = nil
+	e.data = e.data[:0]
 	e.err = nil
 }
 
