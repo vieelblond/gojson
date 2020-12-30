@@ -25,6 +25,10 @@ func (b *Builder) gStructEncodeWarp(fn string, obj *types.Struct, opt *option.Op
 func (b *Builder) gStructDecodeWarp(fn string, obj *types.Struct, opt *option.Option) error {
 	sn := strings.ToLower(fn[:1])
 	b.line("func (%s *%s) UnmarshalJSON(data []byte) error {", sn, fn)
+	b.line("if len(data) == 0 {")
+	b.line("return nil")
+	b.line("}")
+	b.line("")
 	b.line("dec := backend.NewDecoder()")
 
 	if opt.Unsafe {
